@@ -65,7 +65,7 @@ def utility_processor():
             now = datetime.datetime.now()
 
         if same_day(date, now):
-            return f'{date.hour}:{p_date.minute:02d}'
+            return f'{date.hour}:{date.minute:02d}'
         else:
             return f'{date.day} {month_name(date.month)}'
 
