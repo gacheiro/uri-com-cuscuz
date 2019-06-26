@@ -1,0 +1,1 @@
+from .uricomcuscuz import app
