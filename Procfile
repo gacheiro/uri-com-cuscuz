@@ -1,1 +1,1 @@
-web: gunicorn uriconcuscuz.wsgi
+web: gunicorn uricomcuscuz.wsgi
