@@ -1,3 +1,0 @@
-graft uricomcuscuz/static
-graft uricomcuscuz/templates
-global-exclude *.pyc
