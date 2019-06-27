@@ -6,7 +6,8 @@ import datetime
 
 from flask import Flask, render_template, jsonify
 from werkzeug.contrib.cache import SimpleCache
-   
+from apscheduler.schedulers.background import BackgroundScheduler
+
 from .scraping import latest_solutions
 
      
@@ -23,8 +24,7 @@ cache = SimpleCache()
 def get_latest_solutions():
     rv = cache.get('solutions')
     if rv is None:
-        rv = asyncio.run(latest_solutions(pages=4))
-        result = cache.set('solutions', rv, timeout=60*30)
+        return []
     return rv
 
 
@@ -70,3 +70,19 @@ def utility_processor():
             return f'{date.day} {month_name(date.month)}'
 
     return dict(format_date=format_date)
+
+
+scheduler = BackgroundScheduler()
+scheduler.start()
+
+# TODO: substituir a cache por um bd
+@scheduler.scheduled_job(
+                'interval', 
+                max_instances=1, 
+                next_run_time=datetime.datetime.now(), 
+                seconds=300)
+def update_latest_solutions():
+    print('Updating latest solutions...')
+    lats_solutions = asyncio.run(latest_solutions(pages=4))
+    cache.set('solutions', lats_solutions, timeout=0)
+    print('Done.')
