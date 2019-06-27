@@ -1,4 +1,4 @@
-from uricomcuscuz import app
+from uricomcuscuz import app as application
 
 if __name__ == "__main__":
-    app.run()
+    application.run()
