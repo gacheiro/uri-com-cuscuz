@@ -1,4 +1,3 @@
-# all the imports
 import asyncio
 import os
 import sqlite3
@@ -6,7 +5,8 @@ import datetime
 
 from flask import Flask, render_template, jsonify
 from werkzeug.contrib.cache import SimpleCache
-from apscheduler.schedulers.background import BackgroundScheduler
+from flask_sqlalchemy import SQLAlchemy
+
 
 from .scraping import latest_solutions
 
@@ -15,12 +15,15 @@ app = Flask(__name__)
 app.config.from_object(__name__) # load config from this file
 
 # Load default config and override config from an environment variable
-app.config.update(dict(
-))
-app.config.from_envvar('FLASKR_SETTINGS', silent=True)
+app.config.update({
+    'SECRET_KEY': 'this-really-needs-to-be-changed',
+    'SQLALCHEMY_DATABASE_URI': os.environ['DATABASE_URL'],
+})
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
+
+
 cache = SimpleCache()
-
-
 def get_latest_solutions():
     rv = cache.get('solutions')
     if rv is None:
@@ -70,19 +73,3 @@ def utility_processor():
             return f'{date.day} {month_name(date.month)}'
 
     return dict(format_date=format_date)
-
-
-scheduler = BackgroundScheduler()
-scheduler.start()
-
-# TODO: substituir a cache por um bd
-@scheduler.scheduled_job(
-                'interval', 
-                max_instances=1, 
-                next_run_time=datetime.datetime.now(), 
-                seconds=300)
-def update_latest_solutions():
-    print('Updating latest solutions...')
-    lats_solutions = asyncio.run(latest_solutions(pages=4))
-    cache.set('solutions', lats_solutions, timeout=0)
-    print('Done.')
