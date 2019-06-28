@@ -115,6 +115,7 @@ async def fetch_latest_solutions(session, id):
     return parse_solutions(soup)
 
 
+# TODO: pages should be str not int
 async def fetch_all(pages):
 
     async with aiohttp.ClientSession() as session:

@@ -4,11 +4,9 @@ import sqlite3
 import datetime
 
 from flask import Flask, render_template, jsonify
-from werkzeug.contrib.cache import SimpleCache
 from flask_sqlalchemy import SQLAlchemy
 
-
-from .scraping import latest_solutions
+from .scraping import latest_solutions, fetch_all
 
      
 app = Flask(__name__) 
@@ -22,21 +20,82 @@ app.config.update({
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
-
-cache = SimpleCache()
-def get_latest_solutions():
-    rv = cache.get('solutions')
-    if rv is None:
-        return []
-    return rv
+from .models import User, Submission, Problem
 
 
 @app.route('/')
-def show_entries():
-    latest = get_latest_solutions()
-    return render_template('show_solutions.html', entries=latest)
+def latest():
+    submissions = Submission.query.order_by(Submission.date.desc()).all()
+    return jsonify([sub.serialize() for sub in submissions])
 
 
+@app.route('/update')
+def update():
+    '''Faz a raspagem de dados no site do URI e atualiza o bd.'''
+    users, user_submissions = asyncio.run(fetch_all(4))
+
+    for (user_id, user_name), submissions in zip(users, user_submissions):
+        user = User(id=user_id, name=user_name)
+        db.session.merge(user)
+
+        for sub in submissions:
+            (problem_id, 
+            problem_name, 
+            ranking, 
+            submission_id,
+            language, 
+            exec_time, 
+            date) = sub
+
+            problem = Problem(id=problem_id, name=problem_name)
+            db.session.merge(problem)
+
+            submission = Submission(
+                id=submission_id,
+                user_id=user_id,
+                problem_id=problem_id,
+                language=language,
+                ranking=ranking[:-1], # remove o º do final
+                exec_time=exec_time,
+                date=date
+            )
+            db.session.merge(submission)
+
+        db.session.commit()
+        
+    return 'update complete.'
+
+
+@app.route('/users')
+def users():
+    return jsonify([user.serialize() for user in User.query.all()])
+
+
+@app.route('/users/<id>')
+def user_id(id):
+    '''Retorna as submission do usuário.'''
+    submissions = (
+        Submission
+        .query
+        .filter_by(user_id=id)
+        .order_by(Submission.date.desc())
+        .all()
+    )
+    return jsonify([sub.serialize() for sub in submissions])
+
+
+@app.route('/submissions')
+def submissions():
+    return jsonify([sub.serialize() for sub in Submission.query.all()])
+
+
+@app.route('/problems')
+def problems():
+    return jsonify([prob.serialize() for prob in Problem.query.all()])
+
+
+
+'''
 def same_day(datea, dateb):
     return (datea.day == dateb.day
             and datea.month == dateb.month
@@ -73,3 +132,4 @@ def utility_processor():
             return f'{date.day} {month_name(date.month)}'
 
     return dict(format_date=format_date)
+'''
