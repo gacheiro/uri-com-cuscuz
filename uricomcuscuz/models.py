@@ -7,7 +7,7 @@ class User(db.Model):
     name = db.Column(db.String(), nullable=False)
     submissions = db.relationship('Submission', 
         backref=db.back_ref('user'), lazy=True)
-        
+
     
 class Submission(db.Model):
 
@@ -18,7 +18,7 @@ class Submission(db.Model):
         nullable=False)
     language = db.Column(db.String(), nullable=False)
     ranking = id.Column(db.Integer, nullable=False)
-    exec_time = id.Column(db.Integer, nullable=False)
+    exec_time = id.Column(db.Float, nullable=False)
     date = id.Column(db.DateTime, nullable=False)
 
 
