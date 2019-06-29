@@ -1,0 +1,33 @@
+{% include "header.html" %}
+{% block body %}
+  <div class="page content">
+  <h2>Ultimas soluções para o problema {{ problem.name }}</h2>
+  <table class=solutions>
+  <thead>
+    <th> Usuário </th>
+    <th class="center"> Ranking </th>
+    <th class="center"> Tempo </th>
+    <th class="center"> Linguagem </th>
+    <th class="center"> Data </th>
+  </thead>
+  <tbody>
+  {% for sub in problem.submissions %}
+    <tr>
+        <td>
+            <a href={{ url_for('user_page', id=sub.user.id) }} >
+                {{ sub.user.name }}
+            </a>
+        </td>
+        <td class="center small"> {{ sub.ranking }}º </td>
+        <td class="center small"> {{ sub.exec_time }} </td>
+        <td class="center small"> {{ sub.language }} </td>
+        <td class="center"> {{ format_date(sub.date) }} </td>
+    </tr>
+  {% else %}
+    <tr><td> Inacreditável, nenhuma solução até o momento. </td></tr>
+  {% endfor %}
+  </tbody>
+  </table>
+  </div>
+{% endblock %}
+{% include "footer.html" %}

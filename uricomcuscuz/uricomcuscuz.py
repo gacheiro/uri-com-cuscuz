@@ -24,9 +24,27 @@ from .models import User, Submission, Problem
 
 
 @app.route('/')
-def latest():
-    submissions = Submission.query.order_by(Submission.date.desc()).all()
-    return jsonify([sub.serialize() for sub in submissions])
+def index():
+    submissions = (
+        Submission
+        .query
+        .order_by(Submission.date.desc())
+        .limit(100)
+        .all()
+    )
+    return render_template('index.html', submissions=submissions)
+
+
+@app.route('/users/<id>')
+def user_page(id):
+    user = User.query.get_or_404(id)
+    return render_template('user.html', user=user)
+
+
+@app.route('/problem/<id>')
+def problem_page(id):
+    problem = Problem.query.get_or_404(id)
+    return render_template('problem.html', problem=problem)
 
 
 @app.route('/update')
@@ -65,37 +83,6 @@ def update():
     return 'update complete.'
 
 
-@app.route('/users')
-def users():
-    return jsonify([user.serialize() for user in User.query.all()])
-
-
-@app.route('/users/<id>')
-def user_id(id):
-    '''Retorna as submission do usuário.'''
-    User.query.filter_by(id=id).first_or_404() # existe?
-    submissions = (
-        Submission
-        .query
-        .filter_by(user_id=id)
-        .order_by(Submission.date.desc())
-        .all()
-    )
-    return jsonify([sub.serialize() for sub in submissions])
-
-
-@app.route('/submissions')
-def submissions():
-    return jsonify([sub.serialize() for sub in Submission.query.all()])
-
-
-@app.route('/problems')
-def problems():
-    return jsonify([prob.serialize() for prob in Problem.query.all()])
-
-
-
-'''
 def same_day(datea, dateb):
     return (datea.day == dateb.day
             and datea.month == dateb.month
@@ -132,4 +119,3 @@ def utility_processor():
             return f'{date.day} {month_name(date.month)}'
 
     return dict(format_date=format_date)
-'''

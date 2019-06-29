@@ -1,0 +1,9 @@
+# Vairáveis de ambiente necessárias pra o app funcionar
+
+# Windows
+set DATABASE_URL=postgresql://user:pass@localhost:5432/uricomcuscuz
+set FLASK_DEBUG=true
+
+# Linux
+export DATABASE_URL=postgresql://user:pass@localhost:5432/uricomcuscuz
+export FLASK_DEBUG=true
