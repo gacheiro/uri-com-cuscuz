@@ -5,7 +5,9 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(), nullable=False)
     submissions = db.relationship('Submission', 
-        backref=db.backref('user'), lazy=True)
+        backref=db.backref('user'), 
+        order_by='Submission.date.desc()',
+        lazy=True)
 
     def serialize(self):
         return {
@@ -41,7 +43,9 @@ class Problem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(), nullable=False)
     submissions = db.relationship('Submission', 
-        backref=db.backref('problem'), lazy=True)
+        backref=db.backref('problem'), 
+        order_by='Submission.date.desc()',
+        lazy=True)
 
     def serialize(self):
         return {
