@@ -61,8 +61,7 @@ def update():
             )
             db.session.merge(submission)
 
-        db.session.commit()
-        
+    db.session.commit()        
     return 'update complete.'
 
 
@@ -74,6 +73,7 @@ def users():
 @app.route('/users/<id>')
 def user_id(id):
     '''Retorna as submission do usuário.'''
+    User.query.filter_by(id=id).first_or_404() # existe?
     submissions = (
         Submission
         .query
