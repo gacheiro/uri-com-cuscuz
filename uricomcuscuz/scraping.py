@@ -1,7 +1,6 @@
 import asyncio
 import datetime
 from itertools import chain
-from collections import namedtuple
 
 import aiohttp
 from bs4 import BeautifulSoup
@@ -9,24 +8,6 @@ from bs4 import BeautifulSoup
 
 BASE_URL = 'https://www.urionlinejudge.com.br'
 UERN = BASE_URL + '/judge/pt/users/university/uern'
-
-
-# user solution fields
-_fields = [
-    'user_name', 
-    'user_id', 
-    'user_url',
-    'problem_id',
-    'problem_name',
-    'problem_url',
-    'ranking',
-    'submission_id',
-    'language',
-    'exec_time',
-    'date',
-]
-
-UserSolution = namedtuple('UserSolution', _fields)
 
 
 def profile_url(id):
@@ -57,9 +38,7 @@ def parse_users(soup):
     if soup.tbody is None:
         return
 
-    # os dados do usuário ficam entre tags <tr>
-    for user in soup.tbody.find_all('tr'):
-    
+    for user in soup.tbody.find_all('tr'):    
         # <a href="/judge/pt/profile/[id]"> Nome do Estudante </a>
         atag = user.find('a')
         
@@ -80,14 +59,11 @@ def parse_solutions(soup):
     if soup.tbody is None:
         return
 
-    # os dados das soluções ficam entre tags <tr>
-    for tr in soup.tbody.find_all('tr'):
-        
-        lines = tr.get_text().split('\n')
-        
+    for tr in soup.tbody.find_all('tr'):        
+        lines = tr.get_text().split('\n')       
+
         # esse 'if l' no final remove as strings vazias '' que ficam
-        sol = tuple(l.strip() for l in lines if l)
-       
+        sol = tuple(l.strip() for l in lines if l)       
         if len(sol) == 7:
             yield sol
 
@@ -117,13 +93,11 @@ async def fetch_latest_solutions(session, id):
 
 # TODO: pages should be str not int
 async def fetch_all(pages):
-
     async with aiohttp.ClientSession() as session:
 
         users_by_page = await asyncio.gather(
             *(fetch_users(session, p) for p in uern_pages(pages))
-        )
-        
+        )        
         all_users = list(chain.from_iterable(users_by_page))
 
         solutions = await asyncio.gather(
@@ -131,46 +105,3 @@ async def fetch_all(pages):
         )
 
         return all_users, solutions
-        
-
-def create_user_solutions(users, solutions):
-
-    for (user_id, user_name), user_sols in zip(users, solutions):
-
-        for sol in user_sols:
-            # unpack solution
-            (problem_id, 
-            problem_name, 
-            ranking, 
-            submission_id,
-            language, 
-            exec_time, 
-            date) = sol
-
-            yield UserSolution(
-                user_name, 
-                int(user_id),
-                profile_url_sorted(user_id),
-                int(problem_id),
-                problem_name,
-                problem_url(problem_id),
-                int(ranking[:-1]),  # remove o º do final
-                int(submission_id),
-                language,
-                float(exec_time),
-                parse_date(date)
-            )
-
-
-async def latest_solutions(pages, max=100):
-    users, solutions = await fetch_all(pages)
-    users_solutions = create_user_solutions(users, solutions)
-
-    # ordena pela data  
-    sorted_user_solutions = sorted(
-        users_solutions, 
-        key=lambda u: u.date, 
-        reverse=True
-    )  
-
-    return sorted_user_solutions[:max]
