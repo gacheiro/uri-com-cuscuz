@@ -1,37 +1,61 @@
-{% include "header.html" %}
+{% extends "layout.html" %}
 {% block body %}
-  <div class="page content">
-  <h2>Ultimos problemas resolvidos</h2>
-  <table class=solutions>
-  <thead>
-    <th>Usuário</th>
-    <th>Nome do problema</th>
-    <th class="center">Ranking</th>
-    <th class="center">Linguagem</th>
-    <th class="center">Data</th>
-  </thead>
-  <tbody>
-  {% for sub in submissions %}
-    <tr>
-      <td>
-        <a href={{ url_for('user_page', id=sub.user.id)  }} >
-          {{ sub.user.name }}
-        </a>
-      </td>
-      <td>
-        <a href={{ url_for('problem_page', id=sub.problem.id) }} >
-          {{ sub.problem.name }}
-        </a>
-      </td>
-      <td class="center small">{{ sub.ranking }}º</td>
-      <td class="center small">{{ sub.language }}</td>
-      <td class="center">{{ format_date( sub.date) }}</td>
-    </tr>
-  {% else %}
-    <tr><td> Inacreditável, nenhuma solução até o momento. </td></tr>
-  {% endfor %}
-  </tbody>
-  </table>
+  <div>
+    <section class="section">
+      <div class="container is-small">
+        <h1 class="title">
+          URI com cuscuz
+        </h1>
+        <p class="subtitle">
+          Soluções do <strong>URI Online Judge</strong>.
+        </p>
+      </div>
+    </section>
+
+    <section class="section is-medium">      
+      <div class="container is-small">
+        <div class="columns is-centered">
+          <div class="column is-8">
+            <div class="container">
+              <p>
+                <h3 class="title"> Soluções mais recentes </h3> 
+              </p>
+            </div>
+            <div class="container">
+              <table class="table is-bordered is-hoverable is-fullwidth">
+                  <thead>
+                    <tr>
+                      <td class="has-text-centered">Nome</td>
+                      <td class="has-text-centered">Problema</td>
+                      <td class="has-text-centered">Posição</td>
+                      <td class="has-text-centered">Linguagem</td>
+                      <td class="has-text-centered">Data</td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                      {% for sub in submissions %}
+                        <tr>
+                          <td>
+                            <a href={{ url_for('user_page', id=sub.user.id)  }} >
+                              {{ sub.user.name }}
+                            </a>
+                          </td>
+                          <td>
+                            <a href={{ url_for('problem_page', id=sub.problem.id) }} >
+                              {{ sub.problem.name }}
+                            </a>
+                          </td>
+                          <td class="has-text-centered">{{ sub.ranking }}º</td>
+                          <td class="has-text-centered">{{ sub.language }}</td>
+                          <td class="has-text-centered">{{ format_date(sub.date) }}</td>
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+                </table>
+              </div>
+          </div>
+        </div>
+      </div>
+    </section>
   </div>
 {% endblock %}
-{% include "footer.html" %}
