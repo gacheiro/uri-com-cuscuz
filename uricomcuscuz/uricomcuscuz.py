@@ -34,7 +34,7 @@ def index():
     return render_template('index.html', submissions=submissions)
 
 
-@app.route('/users/<id>')
+@app.route('/user/<id>')
 def user_page(id):
     user = User.query.get_or_404(id)
     return render_template('user.html', user=user)
