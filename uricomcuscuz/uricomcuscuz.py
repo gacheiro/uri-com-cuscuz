@@ -5,8 +5,6 @@ import datetime
 from flask import Flask, render_template, jsonify
 from flask_sqlalchemy import SQLAlchemy
 
-from .scraping import fetch_all, parse_date
-
      
 app = Flask(__name__) 
 app.config.from_object(__name__) # load config from this file
@@ -44,54 +42,6 @@ def user_page(id):
 def problem_page(id):
     problem = Problem.query.get_or_404(id)
     return render_template('problem.html', problem=problem)
-
-
-@app.route('/update')
-def update():
-    '''Faz a raspagem de dados no site do URI e atualiza o bd.'''
-
-    users, user_submissions = asyncio.run(fetch_all(4))
-
-    for (user_id, user_name), submissions in zip(users, user_submissions):
-        user = User(id=user_id, name=user_name)
-        db.session.merge(user)
-
-        for sub in submissions:
-            (problem_id, 
-            problem_name, 
-            ranking, 
-            submission_id,
-            language, 
-            exec_time, 
-            date) = sub
-
-            problem = Problem(id=problem_id, name=problem_name)
-            db.session.merge(problem)
-
-            submission = Submission(
-                id=submission_id,
-                user_id=user_id,
-                problem_id=problem_id,
-                language=language,
-                ranking=ranking[:-1], # remove o º do final
-                exec_time=exec_time,
-                date=parse_date(date)
-            )
-            db.session.merge(submission)
-
-    db.session.commit()        
-    return 'update complete.'
-
-
-@app.route('/clear')
-def clear_data():
-    meta = db.metadata
-    for table in reversed(meta.sorted_tables):
-        print('Clear table %s' % table)
-        db.session.execute(table.delete())
-    db.session.commit()
-
-    return 'Cleared'
 
 
 def same_day(datea, dateb):
