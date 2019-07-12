@@ -1,11 +1,10 @@
-import asyncio
 import os
 import datetime
 
 from flask import Flask, render_template, jsonify
 from flask_sqlalchemy import SQLAlchemy
 
-     
+
 app = Flask(__name__) 
 app.config.from_object(__name__) # load config from this file
 
