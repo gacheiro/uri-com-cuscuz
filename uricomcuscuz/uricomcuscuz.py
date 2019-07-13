@@ -6,13 +6,8 @@ from flask_sqlalchemy import SQLAlchemy
 
 
 app = Flask(__name__) 
-app.config.from_object(__name__) # load config from this file
 
-# Load default config and override config from an environment variable
-app.config.update({
-    'SECRET_KEY': 'this-really-needs-to-be-changed',
-    'SQLALCHEMY_DATABASE_URI': os.environ['DATABASE_URL'],
-})
+app.config.from_object(os.environ['APP_SETTINGS'])
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 

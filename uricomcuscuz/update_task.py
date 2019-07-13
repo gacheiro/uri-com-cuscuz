@@ -1,5 +1,6 @@
 """This task is called by the Heroku scheduler add-on"""
 
+import os
 import asyncio
 
 from .uricomcuscuz import User, Problem, Submission, db
@@ -10,7 +11,8 @@ def update_latest_solutions():
     '''Faz a raspagem de dados no site do URI e atualiza o bd.'''
 
     print('Updating solutions...')
-    users, user_submissions = asyncio.run(fetch_all(4))
+    total_pages = int(os.environ['TOTAL_PAGES'])
+    users, user_submissions = asyncio.run(fetch_all(total_pages))
 
     for (user_id, user_name), submissions in zip(users, user_submissions):
         user = User(id=user_id, name=user_name)

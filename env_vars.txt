@@ -2,8 +2,8 @@
 
 # Windows
 set DATABASE_URL=postgresql://user:pass@localhost:5432/uricomcuscuz
-set FLASK_DEBUG=true
+set APP_SETTINGS=config.DevelopmentConfig
 
 # Linux
 export DATABASE_URL=postgresql://user:pass@localhost:5432/uricomcuscuz
-export FLASK_DEBUG=true
+export APP_SETTINGS=config.DevelopmentConfig
