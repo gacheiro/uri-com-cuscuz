@@ -32,8 +32,11 @@
               <h3 class="title"> {{ table_desc }} </h3> 
             </p>
           </div>
-          <div>
-            {% block table %} {% endblock %}
+          <div class="box">
+            <div class="table-container">
+              {% block table %} 
+              {% endblock %}
+            </div>
           </div>
         </div>
       </div>
