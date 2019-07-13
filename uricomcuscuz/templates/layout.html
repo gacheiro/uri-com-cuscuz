@@ -8,5 +8,35 @@
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
   </head>
 </html>
-{% block body %}
-{% endblock %}
+<body>
+
+  <section class="hero is-dark">
+    <div class="hero-body">
+      <div class="container">
+        <h1 class="title">
+          URI com cuscuz
+        </h1>
+        <h2 class="subtitle">
+          UERN @ URI Online Judge
+        </h2>
+      </div>
+    </div>
+  </section>
+
+  <section class="section is-small">      
+    <div class="container is-fluid">
+      <div class="columns is-centered">
+        <div class="column is-three-fifths">
+          <div>
+            <p>
+              <h3 class="title"> {{ table_desc }} </h3> 
+            </p>
+          </div>
+          <div>
+            {% block table %} {% endblock %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</body>

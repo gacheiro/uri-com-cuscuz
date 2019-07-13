@@ -1,57 +1,29 @@
 {% extends "layout.html" %}
-{% block body %}
-  <div>
-    <section class="section">
-      <div class="container is-small">
-        <h1 class="title">
-          URI com cuscuz
-        </h1>
-        <p class="subtitle">
-          Soluções do <strong>URI Online Judge</strong>.
-        </p>
-      </div>
-    </section>
-
-    <section class="section is-medium">      
-      <div class="container is-small">
-        <div class="columns is-centered">
-          <div class="column is-three-fifths">
-            <div class="container">
-              <p>
-                <h3 class="title"> Ultimas soluções de {{ user.name }} </h3> 
-              </p>
-            </div>
-            <div class="container">
-              <table class="table is-striped is-hoverable is-fullwidth">
-                  <thead>
-                    <tr>
-                      <td class="has-text-centered">Nome do problema</td>
-                      <td class="has-text-centered">Posição</td>
-                      <td class="has-text-centered">Tempo</td>
-                      <td class="has-text-centered">Linguagem</td>
-                      <td class="has-text-centered">Data</td>
-                    </tr>
-                  </thead>
-                  <tbody>
-                      {% for sub in user.submissions %}
-                      <tr>
-                        <td>
-                          <a href={{ url_for("problem_page", id=sub.problem.id) }} >
-                            {{ sub.problem.name }}
-                          </a>
-                        </td>
-                        <td class="has-text-centered">{{ sub.ranking }}º </td>
-                        <td class="has-text-centered">{{ sub.exec_time }}</td>
-                        <td class="has-text-centered">{{ sub.language }}</td>
-                        <td class="has-text-centered">{{ format_date(sub.date) }}</td>        
-                      </tr>
-                      {% endfor %}
-                  </tbody>
-                </table>
-              </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  </div>
+{% block table %}
+  <table class="table is-striped is-hoverable is-fullwidth">
+    <thead>
+      <tr>
+        <td class="has-text-centered">Nome do problema</td>
+        <td class="has-text-centered">Posição</td>
+        <td class="has-text-centered">Tempo</td>
+        <td class="has-text-centered">Linguagem</td>
+        <td class="has-text-centered">Data</td>
+      </tr>
+    </thead>
+    <tbody>
+      {% for sub in user.submissions %}
+        <tr>
+          <td>
+            <a href={{ url_for("problem_page", id=sub.problem.id) }} >
+              {{ sub.problem.name }}
+            </a>
+          </td>
+          <td class="has-text-centered">{{ sub.ranking }}º </td>
+          <td class="has-text-centered">{{ sub.exec_time }}</td>
+          <td class="has-text-centered">{{ sub.language }}</td>
+          <td class="has-text-centered">{{ format_date(sub.date) }}</td>        
+        </tr>
+      {% endfor %}
+  </tbody>
+  </table>
 {% endblock %}

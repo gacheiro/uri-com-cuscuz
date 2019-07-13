@@ -23,19 +23,21 @@ def index():
         .limit(100)
         .all()
     )
-    return render_template('index.html', submissions=submissions)
+    return render_template('index.html', submissions=submissions, table_desc='Soluções mais recentes')
 
 
 @app.route('/user/<id>')
 def user_page(id):
     user = User.query.get_or_404(id)
-    return render_template('user.html', user=user)
+    return render_template('user.html', 
+        user=user, table_desc=f'Ultimas soluções de {user.name}')
 
 
 @app.route('/problem/<id>')
 def problem_page(id):
     problem = Problem.query.get_or_404(id)
-    return render_template('problem.html', problem=problem)
+    return render_template('problem.html', 
+        problem=problem, table_desc=f'Ultimas soluções para {problem.name}')
 
 
 def same_day(datea, dateb):
