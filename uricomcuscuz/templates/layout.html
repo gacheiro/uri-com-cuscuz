@@ -28,8 +28,16 @@
       <div class="columns is-centered">
         <div class="column is-three-fifths">
           <div>
-            <p>
-              <h3 class="title"> {{ table_desc }} </h3> 
+            <p class=>
+              <h3 class="title"> {{ table_desc }} 
+                {% if external_link %}
+                <div class="icon" title="ver no URI">
+                  <a href={{ external_link }} target="_blank">                  
+                    <i class="fas fa-external-link-alt"></i>
+                  </a>
+                </div>
+                {% endif %}
+              </h3>
             </p>
           </div>
           <div class="box is-paddingless">

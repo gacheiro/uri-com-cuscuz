@@ -4,6 +4,7 @@ import datetime
 from flask import Flask, render_template, jsonify
 from flask_sqlalchemy import SQLAlchemy
 
+from .scraping import profile_url_sorted, problem_url
 
 app = Flask(__name__) 
 
@@ -23,21 +24,35 @@ def index():
         .limit(100)
         .all()
     )
-    return render_template('index.html', submissions=submissions, table_desc='Soluções mais recentes')
+    return render_template(
+        'index.html', 
+        submissions=submissions, 
+        table_desc='Soluções mais recentes'
+    )
 
 
 @app.route('/user/<id>')
 def user_page(id):
     user = User.query.get_or_404(id)
-    return render_template('user.html', 
-        user=user, table_desc=f'Ultimas soluções de {user.name}')
+    uri_profile_link = profile_url_sorted(user.id)
+    return render_template(
+        'user.html', 
+        user=user,
+        table_desc=f'Ultimas soluções de {user.name}',
+        external_link=uri_profile_link
+    )
 
 
 @app.route('/problem/<id>')
 def problem_page(id):
     problem = Problem.query.get_or_404(id)
-    return render_template('problem.html', 
-        problem=problem, table_desc=f'Ultimas soluções para {problem.name}')
+    uri_profile_link = problem_url(problem.id)
+    return render_template(
+        'problem.html', 
+        problem=problem, 
+        table_desc=f'Ultimas soluções para {problem.name}',
+        external_link=uri_profile_link
+    )
 
 
 def same_day(datea, dateb):
