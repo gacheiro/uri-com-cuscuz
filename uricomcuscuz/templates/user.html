@@ -1,29 +1,17 @@
 {% extends "layout.html" %}
+
+{% macro render_submission(sub) -%}
+  <td>
+    <a href={{ url_for("problem_page", id=sub.problem.id) }} >
+      {{ sub.problem.name }}
+    </a>
+  </td>
+  <td class="has-text-centered">{{ sub.ranking }}º </td>
+  <td class="has-text-centered">{{ sub.exec_time }}</td>
+  <td class="has-text-centered">{{ sub.language }}</td>
+  <td class="has-text-centered">{{ format_date(sub.date) }}</td>  
+{%- endmacro %}
+
 {% block table %}
-  <table class="table is-striped is-hoverable is-fullwidth">
-    <thead>
-      <tr>
-        <td class="has-text-centered">Nome do problema</td>
-        <td class="has-text-centered">Posição</td>
-        <td class="has-text-centered">Tempo</td>
-        <td class="has-text-centered">Linguagem</td>
-        <td class="has-text-centered">Data</td>
-      </tr>
-    </thead>
-    <tbody>
-      {% for sub in user.submissions %}
-        <tr>
-          <td>
-            <a href={{ url_for("problem_page", id=sub.problem.id) }} >
-              {{ sub.problem.name }}
-            </a>
-          </td>
-          <td class="has-text-centered">{{ sub.ranking }}º </td>
-          <td class="has-text-centered">{{ sub.exec_time }}</td>
-          <td class="has-text-centered">{{ sub.language }}</td>
-          <td class="has-text-centered">{{ format_date(sub.date) }}</td>        
-        </tr>
-      {% endfor %}
-  </tbody>
-  </table>
+  {{ render_table(thead, tbody, render_submission) }}
 {% endblock %}

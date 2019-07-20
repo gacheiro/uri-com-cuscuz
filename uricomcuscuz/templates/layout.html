@@ -10,6 +10,25 @@
 </html>
 <body>
 
+  {% macro render_table(thead, tbody, row_macro) -%}
+    <table class="table is-striped is-hoverable is-fullwidth">
+        <thead>
+          <tr>
+            {% for hcell in thead %}
+              <th class="has-text-centered">{{ hcell }}</th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in tbody %}
+            <tr>
+              {{ row_macro(row) }}
+            </tr>
+          {% endfor %}
+        </tbody>
+    </table>
+  {%- endmacro %}
+
   <section class="hero is-dark">
     <div class="hero-body">
       <div class="container">

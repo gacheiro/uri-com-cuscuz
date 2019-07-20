@@ -26,8 +26,9 @@ def index():
     )
     return render_template(
         'index.html', 
-        submissions=submissions, 
-        table_desc='Soluções mais recentes'
+        table_desc='Soluções mais recentes',
+        thead=('Nome', 'Problema', 'Posição', 'Linguagem', 'Data'),
+        tbody=submissions,
     )
 
 
@@ -37,9 +38,10 @@ def user_page(id):
     uri_profile_link = profile_url_sorted(user.id)
     return render_template(
         'user.html', 
-        user=user,
         table_desc=f'Ultimas soluções de {user.name}',
-        external_link=uri_profile_link
+        external_link=uri_profile_link,
+        thead=('Nome', 'Posição', 'Tempo', 'Linguagem', 'Data'),
+        tbody=user.submissions
     )
 
 
@@ -49,9 +51,10 @@ def problem_page(id):
     uri_profile_link = problem_url(problem.id)
     return render_template(
         'problem.html', 
-        problem=problem, 
         table_desc=f'Ultimas soluções para {problem.name}',
-        external_link=uri_profile_link
+        external_link=uri_profile_link,
+        thead=('Usuário', 'Posição', 'Tempo', 'Linguagem', 'Data'),
+        tbody=problem.submissions
     )
 
 
