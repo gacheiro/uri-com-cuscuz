@@ -28,13 +28,19 @@
         </tbody>
   {%- endmacro %}
 
-  {% macro render_pagination(pagination, endpoint) %}
+  {% macro render_pagination(pagination) %}
     <ul class="pagination-list">
       {%- for page in pagination.iter_pages(1, 1, 2, 0) %}
         <li>
           {% if page %}
             {% if page != pagination.page %}
-              <a class="pagination-link" href={{ url_for(endpoint, page=page) }} aria-label=Página{{ page }} aria-current="page">{{ page }}</a>
+              <a class="pagination-link" 
+              {% if g.id %}
+                href={{ url_for(g.endpoint, id=g.id, page=page) }} 
+              {% else %}
+                href={{ url_for(g.endpoint, page=page) }} 
+              {% endif %}
+              aria-label=Página{{ page }} aria-current="page">{{ page }}</a>
             {% else %}
               <a class="pagination-link is-current" aria-label=Página{{ page }} aria-current="page">{{ page }}</a>
             {% endif %}

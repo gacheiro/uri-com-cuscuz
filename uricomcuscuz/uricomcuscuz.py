@@ -1,7 +1,7 @@
 import os
 import datetime
 
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request, g
 from flask_sqlalchemy import SQLAlchemy
 
 from .scraping import profile_url_sorted, problem_url
@@ -25,6 +25,7 @@ def index(page=1):
         .order_by(Submission.date.desc())
         .paginate(page, app.config['SUBS_PER_PAGE'], error_out=False)
     )
+    g.endpoint = 'index'    # usado nos links da paginação
     return render_template(
         'index.html', 
         table_desc='Soluções mais recentes',
@@ -36,7 +37,6 @@ def index(page=1):
 @app.route('/user/<id>')
 def user_page(id):
     page = request.args.get('page', 1, type=int)
-    per_page = 30
     user = User.query.get_or_404(id)
     submissions = (
         Submission
@@ -45,6 +45,7 @@ def user_page(id):
         .order_by(Submission.date.desc())
         .paginate(page, app.config['SUBS_PER_PAGE'], error_out=False)
     )
+    g.endpoint, g.id = 'user_page', id # usado nos links da paginação
     return render_template(
         'user.html', 
         table_desc=f'Ultimas soluções de {user.name}',
@@ -57,7 +58,6 @@ def user_page(id):
 @app.route('/problem/<id>')
 def problem_page(id):
     page = request.args.get('page', 1, type=int)
-    per_page = 30
     problem = Problem.query.get_or_404(id)
     submissions = (
         Submission
@@ -66,6 +66,7 @@ def problem_page(id):
         .order_by(Submission.date.desc())
         .paginate(page, app.config['SUBS_PER_PAGE'], error_out=False)
     )
+    g.endpoint, g.id = 'problem_page', id # usado nos links da paginação
     return render_template(
         'problem.html', 
         table_desc=f'Ultimas soluções para {problem.name}',
