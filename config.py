@@ -11,6 +11,8 @@ class Config(object):
     UTC = os.environ.get('UTC', -3)
     # o número de páginas na universidade `?page={}`
     TOTAL_PAGES = os.environ['TOTAL_PAGES']
+    # pagination das submissions
+    SUBS_PER_PAGE = 30
 
 
 class ProductionConfig(Config):

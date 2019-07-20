@@ -1,7 +1,7 @@
 import os
 import datetime
 
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 
 from .scraping import profile_url_sorted, problem_url
@@ -16,45 +16,62 @@ from .models import User, Submission, Problem
 
 
 @app.route('/')
-def index():
+@app.route('/index')
+def index(page=1):
+    page = request.args.get('page', 1, type=int)
     submissions = (
         Submission
         .query
         .order_by(Submission.date.desc())
-        .limit(100)
-        .all()
+        .paginate(page, app.config['SUBS_PER_PAGE'], error_out=False)
     )
     return render_template(
         'index.html', 
         table_desc='Soluções mais recentes',
         thead=('Nome', 'Problema', 'Posição', 'Linguagem', 'Data'),
-        tbody=submissions,
+        pagination=submissions,
     )
 
 
 @app.route('/user/<id>')
 def user_page(id):
+    page = request.args.get('page', 1, type=int)
+    per_page = 30
     user = User.query.get_or_404(id)
-    uri_profile_link = profile_url_sorted(user.id)
+    submissions = (
+        Submission
+        .query
+        .filter_by(user_id=id)
+        .order_by(Submission.date.desc())
+        .paginate(page, app.config['SUBS_PER_PAGE'], error_out=False)
+    )
     return render_template(
         'user.html', 
         table_desc=f'Ultimas soluções de {user.name}',
-        external_link=uri_profile_link,
+        external_link=profile_url_sorted(user.id),
         thead=('Nome', 'Posição', 'Tempo', 'Linguagem', 'Data'),
-        tbody=user.submissions
+        pagination=submissions
     )
 
 
 @app.route('/problem/<id>')
 def problem_page(id):
+    page = request.args.get('page', 1, type=int)
+    per_page = 30
     problem = Problem.query.get_or_404(id)
-    uri_profile_link = problem_url(problem.id)
+    submissions = (
+        Submission
+        .query
+        .filter_by(problem_id=id)
+        .order_by(Submission.date.desc())
+        .paginate(page, app.config['SUBS_PER_PAGE'], error_out=False)
+    )
     return render_template(
         'problem.html', 
         table_desc=f'Ultimas soluções para {problem.name}',
-        external_link=uri_profile_link,
+        external_link=problem_url(problem.id),
         thead=('Usuário', 'Posição', 'Tempo', 'Linguagem', 'Data'),
-        tbody=problem.submissions
+        pagination=submissions
     )
 
 

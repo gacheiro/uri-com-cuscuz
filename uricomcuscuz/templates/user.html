@@ -13,5 +13,8 @@
 {%- endmacro %}
 
 {% block table %}
-  {{ render_table(thead, tbody, render_submission) }}
+  {{ render_table(thead, pagination.items, render_submission) }}
+{% endblock %}
+{% block pagination %}
+  {{ render_pagination(pagination, 'user')}}
 {% endblock %}

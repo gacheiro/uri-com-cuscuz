@@ -26,8 +26,25 @@
             </tr>
           {% endfor %}
         </tbody>
-    </table>
   {%- endmacro %}
+
+  {% macro render_pagination(pagination, endpoint) %}
+    <ul class="pagination-list">
+      {%- for page in pagination.iter_pages(1, 1, 2, 0) %}
+        <li>
+          {% if page %}
+            {% if page != pagination.page %}
+              <a class="pagination-link" href={{ url_for(endpoint, page=page) }} aria-label=Página{{ page }} aria-current="page">{{ page }}</a>
+            {% else %}
+              <a class="pagination-link is-current" aria-label=Página{{ page }} aria-current="page">{{ page }}</a>
+            {% endif %}
+          {% else %}
+            <span class="pagination-ellipsis">&hellip;</span>
+          {% endif %}
+        </li>
+      {%- endfor %}
+    </ul>
+  {% endmacro %}
 
   <section class="hero is-dark">
     <div class="hero-body">
@@ -59,10 +76,14 @@
               </h3>
             </p>
           </div>
-            <div class="table-container">
-              {% block table %} 
+          <nav class="pagination is-small is-right" role="navigation" aria-label="pagination">
+              {% block pagination %}
               {% endblock %}
-            </div>
+          </nav>
+          <div class="table-container">
+            {% block table %} 
+            {% endblock %}
+          </div>
         </div>
       </div>
     </div>
