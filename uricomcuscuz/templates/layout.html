@@ -11,21 +11,20 @@
 <body>
 
   {% macro render_table(thead, tbody, row_macro) -%}
-    <table class="table is-striped is-hoverable is-fullwidth">
-        <thead>
-          <tr>
-            {% for hcell in thead %}
-              <th class="has-text-centered">{{ hcell }}</th>
-            {% endfor %}
-          </tr>
-        </thead>
-        <tbody>
-          {% for row in tbody %}
-            <tr>
-              {{ row_macro(row) }}
-            </tr>
-          {% endfor %}
-        </tbody>
+    <thead>
+      <tr>
+        {% for hcell in thead %}
+          <th class="has-text-centered">{{ hcell }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in tbody %}
+        <tr>
+          {{ row_macro(row) }}
+        </tr>
+      {% endfor %}
+    </tbody>
   {%- endmacro %}
 
   {% macro render_pagination(pagination) %}
@@ -70,7 +69,7 @@
       <div class="columns is-centered">
         <div class="column is-three-fifths">
           <div>
-            <p class=>
+            <p>
               <h3 class="title"> {{ table_desc }} 
                 {% if external_link %}
                 <div class="icon" title="ver no URI">
@@ -82,13 +81,17 @@
               </h3>
             </p>
           </div>
-          <nav class="pagination is-small is-right" role="navigation" aria-label="pagination">
+          <div class="table-container">
+            <table class="table is-striped is-hoverable is-fullwidth">
+              {% block table %} 
+              {% endblock %}
+            </table>
+          </div>
+          <div>
+            <nav class="pagination is-right" role="navigation" aria-label="pagination">
               {% block pagination %}
               {% endblock %}
-          </nav>
-          <div class="table-container">
-            {% block table %} 
-            {% endblock %}
+            </nav>
           </div>
         </div>
       </div>
