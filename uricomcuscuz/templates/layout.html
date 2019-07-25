@@ -14,7 +14,7 @@
     <thead>
       <tr>
         {% for hcell in thead %}
-          <th class="has-text-centered">{{ hcell }}</th>
+          <th class="has-text-centered has-background-link has-text-light">{{ hcell }}</th>
         {% endfor %}
       </tr>
     </thead>
@@ -75,7 +75,7 @@
               <h3 class="title"> {{ table_desc }} 
                 {% if external_link %}
                 <div class="icon" title="ver no URI">
-                  <a href={{ external_link }} target="_blank">                  
+                  <a href={{ external_link }} target="_blank" class="has-text-grey-dark">                  
                     <i class="fas fa-external-link-alt"></i>
                   </a>
                 </div>
@@ -83,11 +83,13 @@
               </h3>
             </p>
           </div>
-          <div class="table-container">
-            <table class="table is-striped is-hoverable is-fullwidth">
-              {% block table %} 
-              {% endblock %}
-            </table>
+          <div class="box is-paddingless">
+            <div class="table-container">
+              <table class="table is-striped is-hoverable is-fullwidth">
+                {% block table %} 
+                {% endblock %}
+              </table>
+            </div>
           </div>
           <div>
             <nav class="pagination is-right" role="navigation" aria-label="pagination">
