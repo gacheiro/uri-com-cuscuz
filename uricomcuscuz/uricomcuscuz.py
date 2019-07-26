@@ -29,7 +29,7 @@ def index(page=1):
     return render_template(
         'index.html', 
         table_desc='Soluções mais recentes',
-        thead=('Nome', 'Problema', 'Posição', 'Linguagem', 'Data'),
+        thead=('Nome', 'Problema', 'Linguagem', 'Data'),
         pagination=submissions,
     )
 
@@ -50,7 +50,7 @@ def user_page(id):
         'user.html', 
         table_desc=f'Ultimas soluções de {user.name}',
         external_link=profile_url_sorted(user.id),
-        thead=('Nome', 'Posição', 'Tempo', 'Linguagem', 'Data'),
+        thead=('Nome', 'Tempo', 'Linguagem', 'Data'),
         pagination=submissions
     )
 
@@ -71,7 +71,7 @@ def problem_page(id):
         'problem.html', 
         table_desc=f'Ultimas soluções para {problem.name}',
         external_link=problem_url(problem.id),
-        thead=('Usuário', 'Posição', 'Tempo', 'Linguagem', 'Data'),
+        thead=('Usuário', 'Tempo', 'Linguagem', 'Data'),
         pagination=submissions
     )
 
