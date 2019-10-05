@@ -8,6 +8,9 @@ from bs4 import BeautifulSoup
 
 BASE_URL = 'https://www.urionlinejudge.com.br'
 UERN = BASE_URL + '/judge/pt/users/university/uern'
+HEADERS = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
+}
 
 
 def profile_url(id):
@@ -68,7 +71,7 @@ def parse_solutions(soup):
             yield sol
 
 
-def parse_date(date, format='%d/%m/%y %H:%M:%S'):
+def parse_date(date, format='%d/%m/%Y %H:%M:%S'):
     return datetime.datetime.strptime(date, format)
     
 
@@ -93,7 +96,7 @@ async def fetch_latest_solutions(session, id):
 
 # TODO: pages should be str not int
 async def fetch_all(pages):
-    async with aiohttp.ClientSession() as session:
+    async with aiohttp.ClientSession(headers=HEADERS) as session:
 
         users_by_page = await asyncio.gather(
             *(fetch_users(session, p) for p in uern_pages(pages))
