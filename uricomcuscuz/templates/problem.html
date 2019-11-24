@@ -8,7 +8,7 @@
     </a>
     <td class="has-text-centered">{{ sub.exec_time }}</td>
     <td class="has-text-centered">{{ sub.language }}</td>
-    <td class="has-text-centered">{{ format_date(sub.date) }}</td>  
+    <td class="has-text-centered">{{ sub.date|format_date }}</td>  
   </td>
 {%- endmacro %}
 

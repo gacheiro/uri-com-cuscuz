@@ -78,44 +78,6 @@ def problem_page(id):
     )
 
 
-def same_day(datea, dateb):
-    return (datea.day == dateb.day
-            and datea.month == dateb.month
-            and datea.year == dateb.year)
-
-
-def month_name(month):
-    return {
-        1: 'Jan',
-        2: 'Fev',
-        3: 'Mar',
-        4: 'Abr',
-        5: 'Mai',
-        6: 'Jun',
-        7: 'Jul',
-        8: 'Ago',
-        9: 'Set',
-        10: 'Out',
-        11: 'Nov',
-        12: 'Dez',
-    }[month]
-
-
-@app.context_processor
-def utility_processor():
-
-    def format_date(date, now=None):
-        if now is None:
-            now = datetime.datetime.now()
-
-        if same_day(date, now):
-            return f'{date.hour}:{date.minute:02d}'
-        else:
-            return f'{date.day} {month_name(date.month)}'
-
-    return dict(format_date=format_date)
-
-
 @app.cli.command('fetch-subs')
 def fetch_submissions():
     """Faz a raspagem de dados no site do URI e atualiza o bd."""
@@ -145,3 +107,33 @@ def fetch_submissions():
             db.session.merge(submission)            
     db.session.commit()
     print('done.')
+
+
+@app.template_filter('format_date')
+def format_date(date, now=None):
+    if now is None:
+        now = datetime.datetime.now()
+    if same_day(date, now):
+        return f'{date.hour}:{date.minute:02d}'
+    return f'{date.day} {month_name(date.month)}'
+
+
+def same_day(datea, dateb):
+    return datea.date() == dateb.date()
+
+
+def month_name(month):
+    return {
+        1: 'Jan',
+        2: 'Fev',
+        3: 'Mar',
+        4: 'Abr',
+        5: 'Mai',
+        6: 'Jun',
+        7: 'Jul',
+        8: 'Ago',
+        9: 'Set',
+        10: 'Out',
+        11: 'Nov',
+        12: 'Dez',
+    }[month]
