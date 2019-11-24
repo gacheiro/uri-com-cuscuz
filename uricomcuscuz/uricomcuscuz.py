@@ -1,20 +1,17 @@
 import os
 import datetime
 
-from flask import Flask, render_template, jsonify, request, g
-from flask_sqlalchemy import SQLAlchemy
 import asyncio
-
-from uricomcuscuz.scraping import (profile_url_sorted, problem_url, 
-    fetch_all, parse_date)
+from flask import Flask, render_template, request, g
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__) 
-
 app.config.from_object(os.environ['APP_SETTINGS'])
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
-from .models import User, Submission, Problem
+from uricomcuscuz.models import User, Submission, Problem
+from uricomcuscuz.scraping import (profile_url_sorted, problem_url, 
+    fetch_all, parse_date)
 
 
 @app.route('/')
