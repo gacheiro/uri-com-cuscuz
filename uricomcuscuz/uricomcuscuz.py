@@ -1,7 +1,7 @@
 import os
 import datetime
-
 import asyncio
+
 from flask import Flask, render_template, request, g
 from flask_sqlalchemy import SQLAlchemy
 
@@ -16,63 +16,41 @@ from uricomcuscuz.scraping import (profile_url_sorted, problem_url,
 
 @app.route('/')
 @app.route('/index')
-def index(page=1):
+def index():
     page = request.args.get('page', 1, type=int)
-    submissions = (
-        Submission
-        .query
-        .order_by(Submission.date.desc())
-        .paginate(page, app.config['SUBS_PER_PAGE'], error_out=False)
-    )
-    g.endpoint = 'index'    # usado nos links da paginação
-    return render_template(
-        'index.html', 
-        table_desc='Soluções mais recentes',
-        thead=('Nome', 'Problema', 'Linguagem', 'Data'),
-        pagination=submissions,
-    )
+    query = Submission.query.order_by(Submission.date.desc())
+    pagination = query.paginate(page,
+                                app.config['SUBS_PER_PAGE'], 
+                                error_out=False)
+    return render_template('index.html', pagination=pagination)
 
 
-@app.route('/user/<id>')
-def user_page(id):
+@app.route('/users/<id>')
+def users(id):
     page = request.args.get('page', 1, type=int)
     user = User.query.get_or_404(id)
-    submissions = (
-        Submission
-        .query
-        .filter_by(user_id=id)
-        .order_by(Submission.date.desc())
-        .paginate(page, app.config['SUBS_PER_PAGE'], error_out=False)
-    )
-    g.endpoint, g.id = 'user_page', id # usado nos links da paginação
-    return render_template(
-        'user.html', 
-        table_desc=f'Ultimas soluções de {user.name}',
-        external_link=profile_url_sorted(user.id),
-        thead=('Nome', 'Tempo', 'Linguagem', 'Data'),
-        pagination=submissions
-    )
+    query = Submission.query.filter_by(user_id=id).order_by(Submission.date.desc())
+    pagination = query.paginate(page,
+                                app.config['SUBS_PER_PAGE'],
+                                error_out=False)
+    return render_template('user.html',
+                           user=user,
+                           external_link=profile_url_sorted(user.id),
+                           pagination=pagination)
 
 
-@app.route('/problem/<id>')
-def problem_page(id):
+@app.route('/problems/<id>')
+def problems(id):
     page = request.args.get('page', 1, type=int)
     problem = Problem.query.get_or_404(id)
-    submissions = (
-        Submission
-        .query
-        .filter_by(problem_id=id)
-        .order_by(Submission.date.desc())
-        .paginate(page, app.config['SUBS_PER_PAGE'], error_out=False)
-    )
-    g.endpoint, g.id = 'problem_page', id # usado nos links da paginação
-    return render_template(
-        'problem.html', 
-        table_desc=f'Ultimas soluções para {problem.name}',
-        external_link=problem_url(problem.id),
-        thead=('Usuário', 'Tempo', 'Linguagem', 'Data'),
-        pagination=submissions
-    )
+    query = Submission.query.filter_by(problem_id=id).order_by(Submission.date.desc())
+    pagination = query.paginate(page,
+                                app.config['SUBS_PER_PAGE'],
+                                error_out=False)
+    return render_template('problem.html',
+                           problem=problem,
+                           external_link=problem_url(problem.id),
+                           pagination=pagination)
 
 
 @app.cli.command('fetch-subs')

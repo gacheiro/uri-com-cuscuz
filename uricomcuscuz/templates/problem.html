@@ -1,9 +1,12 @@
 {% extends "layout.html" %}
+{% import "_table.html" as table %}
+
+{% set table_description = 'Ultimas soluções para %s'|format(problem.name) %}
 
 {% macro render_submission(sub) -%}
   {# renders a table row with a link to user page #}
   <td>
-    <a href={{ url_for('user_page', id=sub.user.id) }} >
+    <a href={{ url_for('users', id=sub.user.id) }} >
         {{ sub.user.name }}
     </a>
     <td class="has-text-centered">{{ sub.exec_time }}</td>
@@ -12,9 +15,13 @@
   </td>
 {%- endmacro %}
 
+{% block content %}
+  {{ super() }}
+{% endblock %}
 {% block table %}
-  {{ render_table(thead, pagination.items, render_submission) }}
+  {% set thead = ('Usuário', 'Tempo', 'Linguagem', 'Data') %}
+  {{ table.render(thead, pagination.items, render_submission) }}
 {% endblock %}
 {% block pagination %}
-  {{ render_pagination(pagination)}}
+  {{ render_pagination(pagination, base_path='problems', page_id=problem.id) }}
 {% endblock %}

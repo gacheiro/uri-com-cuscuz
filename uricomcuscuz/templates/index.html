@@ -1,14 +1,17 @@
 {% extends "layout.html" %}
+{% import "_table.html" as table %}
+
+{% set table_description = 'Soluções mais recentes' %}
 
 {% macro render_submission(sub) -%}
-  {# renders a table row with a link to user page and problem page #}
+{# renders a table row with a link to user page and problem page #}
   <td>
-    <a href={{ url_for('user_page', id=sub.user.id)  }} >
+    <a href={{ url_for('users', id=sub.user.id)  }} >
       {{ sub.user.name }}
     </a>
   </td>
   <td>
-    <a href={{ url_for('problem_page', id=sub.problem.id) }} >
+    <a href={{ url_for('problems', id=sub.problem.id) }} >
       {{ sub.problem.name }}
     </a>
   </td>
@@ -16,9 +19,13 @@
   <td class="has-text-centered">{{ sub.date|format_date }}</td>
 {%- endmacro %}
 
+{% block content %}
+  {{ super() }}
+{% endblock %}
 {% block table %}
-  {{ render_table(thead, pagination.items, render_submission) }}
+  {% set thead = ('Nome', 'Problema', 'Linguagem', 'Data') %}
+  {{ table.render(thead, pagination.items, render_submission) }}
 {% endblock %}
 {% block pagination %}
-  {{ render_pagination(pagination) }}
+  {{ render_pagination(pagination, base_path='index') }}
 {% endblock %}

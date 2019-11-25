@@ -1,0 +1,16 @@
+{% macro render(thead, tbody, row_macro) -%}
+<thead>
+  <tr>
+    {% for hcell in thead %}
+      <th class="has-text-centered has-background-link has-text-light">{{ hcell }}</th>
+    {% endfor %}
+  </tr>
+</thead>
+<tbody>
+  {% for row in tbody %}
+    <tr>
+      {{ row_macro(row) }}
+    </tr>
+  {% endfor %}
+</tbody>
+{%- endmacro %}

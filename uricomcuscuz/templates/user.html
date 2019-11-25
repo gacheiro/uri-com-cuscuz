@@ -1,8 +1,11 @@
 {% extends "layout.html" %}
+{% import "_table.html" as table %}
+
+{% set table_description = 'Ultimas soluções de %s'|format(user.name) %}
 
 {% macro render_submission(sub) -%}
   <td>
-    <a href={{ url_for("problem_page", id=sub.problem.id) }} >
+    <a href={{ url_for("problems", id=sub.problem.id) }} >
       {{ sub.problem.name }}
     </a>
   </td>
@@ -11,9 +14,13 @@
   <td class="has-text-centered">{{ sub.date|format_date }}</td>  
 {%- endmacro %}
 
+{% block content %}
+  {{ super() }}
+{% endblock %}
 {% block table %}
-  {{ render_table(thead, pagination.items, render_submission) }}
+  {% set thead = ('Nome', 'Problema', 'Linguagem', 'Data') %}
+  {{ table.render(thead, pagination.items, render_submission) }}
 {% endblock %}
 {% block pagination %}
-  {{ render_pagination(pagination) }}
+  {{ render_pagination(pagination, base_path='users', page_id=user.id) }}
 {% endblock %}
