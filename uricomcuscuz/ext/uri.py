@@ -9,19 +9,19 @@ from bs4 import BeautifulSoup
 BASE_URL = 'https://www.urionlinejudge.com.br'
 UERN = BASE_URL + '/judge/pt/users/university/uern'
 HEADERS = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ' \
+                  'AppleWebKit/537.36 (KHTML, like Gecko) ' \
+                  'Chrome/77.0.3865.90 Safari/537.36',
 }
 
 
 def profile_url(id):
-    return f'{BASE_URL}/judge/pt/profile/{id}'
-
-
-def profile_url_sorted(id):
-    return f'{profile_url(id)}?sort=Ranks.created&direction=desc'
+    """Retorna uma url para o perfil do usuário."""
+    return f'{BASE_URL}/judge/pt/profile/{id}?sort=Ranks.created&direction=desc'
 
 
 def problem_url(id):
+    """Retorna uma url para a página do problema."""
     return f'{BASE_URL}/judge/pt/problems/view/{id}'
 
 
@@ -87,9 +87,7 @@ async def fetch_users(session, page):
 #       talvez fazer alguma transformação com o campo date
 async def fetch_latest_solutions(session, id):
     '''Retorna até 30 soluções mais recentes do usuário.'''
-    
-    profile_url = profile_url_sorted(id)
-    html = await fetch(session, profile_url)
+    html = await fetch(session, profile_url(id))
     soup = BeautifulSoup(html, 'html.parser')
     return parse_solutions(soup)
 

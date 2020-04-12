@@ -2,6 +2,7 @@
 {% import "_table.html" as table %}
 
 {% set table_description = 'Ultimas soluções para %s'|format(problem.name) %}
+{% set external_link = problem.link %}
 
 {% macro render_submission(sub) -%}
   {# renders a table row with a link to user page #}

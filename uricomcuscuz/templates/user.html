@@ -2,6 +2,7 @@
 {% import "_table.html" as table %}
 
 {% set table_description = 'Ultimas soluções de %s'|format(user.name) %}
+{% set external_link = user.link %}
 
 {% macro render_submission(sub) -%}
   <td>
@@ -9,7 +10,7 @@
       {{ sub.problem.name }}
     </a>
   </td>
-  <td class="has-text-centered">{{ sub.exec_time }}</td>
+  <td class="has-text-centered">{{ sub.exec_time }}s</td>
   <td class="has-text-centered">{{ sub.language }}</td>
   <td class="has-text-centered">{{ sub.date|format_date }}</td>  
 {%- endmacro %}
@@ -18,7 +19,7 @@
   {{ super() }}
 {% endblock %}
 {% block table %}
-  {% set thead = ('Nome', 'Problema', 'Linguagem', 'Data') %}
+  {% set thead = ('Nome', 'Tempo', 'Linguagem', 'Data') %}
   {{ table.render(thead, pagination.items, render_submission) }}
 {% endblock %}
 {% block pagination %}

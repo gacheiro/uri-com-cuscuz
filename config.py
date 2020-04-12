@@ -1,5 +1,8 @@
 import os
-basedir = os.path.abspath(os.path.dirname(__file__))
+from dotenv import load_dotenv
+
+load_dotenv('.env')
+
 
 class Config(object):
     DEBUG = False
@@ -12,17 +15,12 @@ class Config(object):
     UTC = os.environ.get('UTC', -3)
     # o número de páginas na universidade `?page={}`
     TOTAL_PAGES = os.environ['TOTAL_PAGES']
-    # pagination das submissions
+    # número de submissões por página
     SUBS_PER_PAGE = 30
 
 
 class ProductionConfig(Config):
     DEBUG = False
-
-
-class StagingConfig(Config):
-    DEVELOPMENT = True
-    DEBUG = True
 
 
 class DevelopmentConfig(Config):
