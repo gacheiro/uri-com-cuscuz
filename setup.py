@@ -8,6 +8,7 @@ requires = [
     'Flask>=1.0.3',
     'Flask-SQLAlchemy>=2.4.0',
     'Flask-Migrate>=2.5.2',
+    'gunicorn>=19.9.0',
     'psycopg2-binary>=2.8.5',
     'pytest>=5.3.0',
     'python-dotenv>=0.12.0',
