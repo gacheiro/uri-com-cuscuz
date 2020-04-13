@@ -16,7 +16,7 @@ def drop_db():
     db.drop_all()
 
 
-def fetch_submissions():
+def fetch_subs():
     """Faz a raspagem de dados no site do URI e atualiza o bd."""
     print('Updating solutions...')
     total_pages = int(current_app.config['TOTAL_PAGES'])
@@ -48,5 +48,5 @@ def fetch_submissions():
 
 def init_app(app):
     """Registra os comandos no app."""
-    for command in [create_db, drop_db, fetch_submissions]:
-        app.cli.add_command(app.cli.command('fetch-subs')(command))
+    for command in [create_db, drop_db, fetch_subs]:
+        app.cli.add_command(app.cli.command()(command))

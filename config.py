@@ -11,6 +11,7 @@ class Config(object):
     SECRET_KEY = 'this-really-needs-to-be-changed'
     SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    MIGRATIONS_DIR = 'uricomcuscuz/migrations'
     # para converter os horários para hora local
     UTC = os.environ.get('UTC', -3)
     # o número de páginas na universidade `?page={}`
