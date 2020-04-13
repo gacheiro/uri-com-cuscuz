@@ -9,9 +9,9 @@ from bs4 import BeautifulSoup
 BASE_URL = 'https://www.urionlinejudge.com.br'
 UERN = BASE_URL + '/judge/pt/users/university/uern'
 HEADERS = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ' \
-                  'AppleWebKit/537.36 (KHTML, like Gecko) ' \
-                  'Chrome/77.0.3865.90 Safari/537.36',
+    'accept': 'text/html',
+    'accept-language': 'pt-BR, pt',
+    'user-agent': 'UricomCuscuz/1',
 }
 
 
