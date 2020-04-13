@@ -20,7 +20,12 @@ def fetch_subs():
     """Faz a raspagem de dados no site do URI e atualiza o bd."""
     print('Updating solutions...')
     total_pages = int(current_app.config['TOTAL_PAGES'])
-    users, user_submissions = asyncio.run(fetch_all(total_pages))
+    ###
+    # https://github.com/aio-libs/aiohttp/issues/4324
+    # https://github.com/Azure/azure-sdk-for-python/issues/9060
+    loop = asyncio.get_event_loop()
+    users, user_submissions = loop.run_until_complete(fetch_all(total_pages))
+    ###
     for (user_id, user_name), submissions in zip(users, user_submissions):
         user = User(id=user_id, name=user_name)
         db.session.merge(user)

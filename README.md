@@ -16,13 +16,16 @@ python3 -m venv venv
 Ative o `virtualenv` e instale as dependências:
 
 ```
+
 # Linux
 source venv/bin/activate
-pip install -r requirements.txt
 
 # Windows
 venv\Scripts\activate.bat
-pip install -r requirements.txt
+
+# Instalar o pacote e as dependências
+python -m pip install --upgrade pip
+pip install -e .
 ```
 
 Para o app funcionar, é necessário definir algumas variáveis de ambiente (em um arquivo `.env`):
@@ -37,6 +40,9 @@ DATABASE_URL=sqlite:///db.sqlite3
 Rodar testes, atualizar o banco de dados e rodar o app:
 
 ```
+# Criar as tabelas do banco
+flask create-db
+
 # Testes
 pytest uricomcuscuz
 
@@ -46,3 +52,6 @@ flask fetch-subs
 # Rodar o app
 flask run
 ```
+
+Por padrão, o crawler so irá indexar a primeira página da universiade (`?page=1`). Para definir o número de páginas
+adicione `TOTAL_PAGES=n` com `n` igual à paginação máxima ao arquivo `.env`.

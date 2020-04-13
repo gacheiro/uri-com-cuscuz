@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 
-load_dotenv('.env')
+load_dotenv()
 
 
 class Config(object):
@@ -15,7 +15,7 @@ class Config(object):
     # para converter os horários para hora local
     UTC = os.environ.get('UTC', -3)
     # o número de páginas na universidade `?page={}`
-    TOTAL_PAGES = os.environ['TOTAL_PAGES']
+    TOTAL_PAGES = os.environ.get('TOTAL_PAGES', 1)
     # número de submissões por página
     SUBS_PER_PAGE = 30
 

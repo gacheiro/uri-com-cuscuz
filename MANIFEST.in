@@ -1,0 +1,2 @@
+recursive-include uricomcuscuz/templates *
+recursive-include uricomcuscuz/static *

@@ -1,9 +1,0 @@
-# Vairáveis de ambiente necessárias pra o app funcionar
-
-# Windows
-set DATABASE_URL=postgresql://user:pass@localhost:5432/uricomcuscuz
-set APP_SETTINGS=config.DevelopmentConfig
-
-# Linux
-export DATABASE_URL=postgresql://user:pass@localhost:5432/uricomcuscuz
-export APP_SETTINGS=config.DevelopmentConfig
