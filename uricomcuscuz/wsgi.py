@@ -1,1 +1,3 @@
-from uricomcuscuz import app as application
+from uricomcuscuz import create_app
+
+application = create_app()

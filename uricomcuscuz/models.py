@@ -1,4 +1,4 @@
-from uricomcuscuz import db
+from uricomcuscuz.ext.db import db
 from uricomcuscuz.ext.uri import profile_url, problem_url
 
 
