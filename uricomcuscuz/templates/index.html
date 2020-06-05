@@ -1,31 +1,38 @@
-{% extends "layout.html" %}
-{% import "_table.html" as table %}
+{% extends 'base.html' %}
+{% from '_pagination.html' import paginate %}
 
-{% set table_description = 'Soluções mais recentes' %}
-
-{% macro render_submission(sub) -%}
-{# renders a table row with a link to user page and problem page #}
-  <td>
-    <a href={{ url_for('app.users', id=sub.user.id)  }} >
-      {{ sub.user.name }}
-    </a>
-  </td>
-  <td>
-    <a href={{ url_for('app.problems', id=sub.problem.id) }} >
-      {{ sub.problem.name }}
-    </a>
-  </td>
-  <td class="has-text-centered">{{ sub.language }}</td>
-  <td class="has-text-centered">{{ sub.date|format_date }}</td>
-{%- endmacro %}
-
-{% block content %}
-  {{ super() }}
+{% block table_description %}
+    <h3 class="title"><p>Soluções mais recentes</p></h3>
 {% endblock %}
+
 {% block table %}
-  {% set thead = ('Nome', 'Problema', 'Linguagem', 'Data') %}
-  {{ table.render(thead, pagination.items, render_submission) }}
+    <thead>
+        <tr class="has-background-link">
+            {% for col in ['Nome', 'Problema', 'Linguagem', 'Data'] %}
+                <th class="has-text-centered has-text-light">{{ col }}</th>
+            {% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for sub in pagination.items %}
+        <tr>
+            <td>
+                <a href="{{ url_for('app.users', id=sub.user.id) }}">
+                    {{ sub.user.name }}
+                </a>
+            </td>
+            <td>
+                <a href="{{ url_for('app.problems', id=sub.problem.id) }}">
+                    {{ sub.problem.name }}
+                </a>
+            </td>
+            <td class="has-text-centered">{{ sub.language }}</td>
+            <td class="has-text-centered">{{ sub.date }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
 {% endblock %}
+
 {% block pagination %}
-  {{ render_pagination(pagination, base_path='app.index') }}
+    {{ paginate(pagination, endpoint='app.index') }}
 {% endblock %}

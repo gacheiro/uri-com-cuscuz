@@ -1,0 +1,25 @@
+{% macro paginate(pagination, endpoint, page_id=None) %}
+<nav class="pagination is-right">
+  <ul class="pagination-list">
+    {%- for page in pagination.iter_pages() %}
+      <li>
+        {% if page %}
+          {% if page != pagination.page %}
+            <a class="pagination-link" 
+            {% if page_id %}
+              href={{ url_for(endpoint, id=page_id, page=page) }} 
+            {% else %}
+              href={{ url_for(endpoint, page=page) }} 
+            {% endif %}
+            aria-label=Página{{ page }} aria-current="page">{{ page }}</a>
+          {% else %}
+            <a class="pagination-link is-current" aria-label=Página{{ page }} aria-current="page">{{ page }}</a>
+          {% endif %}
+        {% else %}
+          <span class="pagination-ellipsis">&hellip;</span>
+        {% endif %}
+      </li>
+    {%- endfor %}
+  </ul>
+</nav>
+{% endmacro %}

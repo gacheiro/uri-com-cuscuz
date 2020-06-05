@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.min.css">
+        <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+        {% include '_analytics.html' %}
+        {% block title %}<title>URI com cuscuz</title>{% endblock %}
+    </head>
+    <body>
+        <section class="hero is-dark">
+            <div class="hero-body">
+                <div class="columns is-centered">
+                    <div class="column is-half">
+                        <h1 class="title">
+                            URI com cuscuz
+                        </h1>
+                        <h2 class="subtitle">
+                            UERN @ URI Online Judge
+                        </h2>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section style="margin-top: 32px;">
+            <div class="container is-fluid">
+                <div class="columns is-centered">
+                    <div class="column is-half">
+                        {% block table_description %} {% endblock %}
+                        <div class="box is-paddingless">
+                            <div class="table-container">
+                                <table class="table is-striped is-hoverable is-fullwidth">
+                                    {% block table %}
+                                    {% endblock %}
+                                </table>
+                            </div>
+                        </div>
+                        {% block pagination %}
+                        {% endblock %}
+                    </div>
+                </div>
+            </div>
+        </section>
+   </body>
+</html>
