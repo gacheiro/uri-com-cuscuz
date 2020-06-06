@@ -2,13 +2,16 @@
 {% from '_pagination.html' import paginate %}
 
 {% block table_description %}
-    <h3 class="title"><p>Últimas soluções de {{ user.name }}</p></h3>
+    <p style="padding-bottom: 24px;">
+        <span class="title">Últimas soluções de {{ user.name }} </span>
+        <a href="{{ user.link }}" target="_blank"><strong>ver no URI</strong></a>
+    </p>
 {% endblock %}
 
 {% block table %}
     <thead>
         <tr class="has-background-link">
-            {% for col in ['Nome', 'Linguagem', 'Tempo', 'Data'] %}
+            {% for col in ['Problema', 'Linguagem', 'Tempo', 'Data'] %}
                 <th class="has-text-centered has-text-light">{{ col }}</th>
             {% endfor %}
         </tr>

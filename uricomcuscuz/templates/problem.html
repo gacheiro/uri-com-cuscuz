@@ -2,7 +2,10 @@
 {% from '_pagination.html' import paginate %}
 
 {% block table_description %}
-    <h3 class="title"><p>Últimas soluções para {{ problem.name }}</p></h3>
+    <p style="padding-bottom: 24px;">
+        <span class="title">Últimas soluções para {{ problem.name }} </span>
+        <a href="{{ problem.link }}" target="_blank"><strong>ver no URI</strong></a>
+    </p>
 {% endblock %}
 
 {% block table %}
