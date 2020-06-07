@@ -35,6 +35,9 @@ FLASK_APP=uricomcuscuz
 FLASK_ENV=development
 APP_SETTINGS=config.DevelopmentConfig
 DATABASE_URL=sqlite:///db.sqlite3
+
+UNIVERSITY=UERN
+UNIVERSITY_TOTAL_PAGES=1
 ```
 
 Rodar testes, atualizar o banco de dados e rodar o app:
@@ -54,4 +57,4 @@ flask run
 ```
 
 Por padrão, o crawler so irá indexar a primeira página da universiade (`?page=1`). Para definir o número de páginas
-adicione `TOTAL_PAGES=n` com `n` igual à paginação máxima ao arquivo `.env`.
+adicione `UNIVERSITY_TOTAL_PAGES=n` com `n` igual à paginação máxima ao arquivo `.env`.

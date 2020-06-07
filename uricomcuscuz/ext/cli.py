@@ -19,7 +19,7 @@ def drop_db():
 def fetch_subs():
     """Faz a raspagem de dados no site do URI e atualiza o bd."""
     print('Updating solutions...')
-    total_pages = int(current_app.config['TOTAL_PAGES'])
+    total_pages = int(current_app.config['UNIVERSITY_TOTAL_PAGES'])
     ###
     # https://github.com/aio-libs/aiohttp/issues/4324
     # https://github.com/Azure/azure-sdk-for-python/issues/9060

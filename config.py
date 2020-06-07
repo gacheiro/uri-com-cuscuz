@@ -4,20 +4,19 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-class Config(object):
+class Config:
     DEBUG = False
     TESTING = False
-    CSRF_ENABLED = True
-    SECRET_KEY = 'this-really-needs-to-be-changed'
     SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     MIGRATIONS_DIR = 'uricomcuscuz/migrations'
-    # para converter os horários para hora local
-    UTC = os.environ.get('UTC', -3)
+
+    UNIVERSITY = os.environ['UNIVERSITY']
     # o número de páginas na universidade `?page={}`
-    TOTAL_PAGES = os.environ.get('TOTAL_PAGES', 1)
-    # número de submissões por página
-    SUBS_PER_PAGE = 30
+    UNIVERSITY_TOTAL_PAGES = os.environ['UNIVERSITY_TOTAL_PAGES']
+
+    # número de submissões exibidas por página
+    PAGINATION = 30
 
 
 class ProductionConfig(Config):

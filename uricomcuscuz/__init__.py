@@ -12,7 +12,7 @@ def index():
     page = request.args.get('page', 1, type=int)
     query = Submission.query.order_by(Submission.date.desc())
     pagination = query.paginate(page,
-                                current_app.config['SUBS_PER_PAGE'],
+                                current_app.config['PAGINATION'],
                                 error_out=False)
     return render_template('index.html', pagination=pagination)
 
@@ -24,7 +24,7 @@ def users(id):
     query = Submission.query.filter_by(user_id=id) \
             .order_by(Submission.date.desc())
     pagination = query.paginate(page,
-                                current_app.config['SUBS_PER_PAGE'],
+                                current_app.config['PAGINATION'],
                                 error_out=False)
     return render_template('user.html',
                            user=user,
@@ -38,7 +38,7 @@ def problems(id):
     query = Submission.query.filter_by(problem_id=id) \
             .order_by(Submission.date.desc())
     pagination = query.paginate(page,
-                                current_app.config['SUBS_PER_PAGE'],
+                                current_app.config['PAGINATION'],
                                 error_out=False)
     return render_template('problem.html',
                            problem=problem,
