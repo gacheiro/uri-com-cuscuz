@@ -1,5 +1,4 @@
 {% extends 'base.html' %}
-{% from '_pagination.html' import paginate %}
 
 {% block table_description %}
     <h3 class="title">Soluções mais recentes</h3>
@@ -27,7 +26,7 @@
                 </a>
             </td>
             <td class="has-text-centered">{{ sub.language }}</td>
-            <td class="has-text-centered">{{ sub.date }}</td>
+            <td class="has-text-centered">{{ sub.date.strftime('%d %b %Y') }}</td>
         </tr>
         {% endfor %}
     </tbody>
