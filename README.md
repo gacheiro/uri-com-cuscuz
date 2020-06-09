@@ -35,7 +35,7 @@ FLASK_APP=uricomcuscuz
 FLASK_ENV=development
 APP_SETTINGS=config.DevelopmentConfig
 DATABASE_URL=sqlite:///db.sqlite3
-
+URI_URL=https://www.urionlinejudge.com.br
 UNIVERSITY=UERN
 UNIVERSITY_TOTAL_PAGES=1
 ```

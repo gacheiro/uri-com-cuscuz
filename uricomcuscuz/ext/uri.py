@@ -1,3 +1,4 @@
+import os
 import asyncio
 import datetime
 from itertools import chain
@@ -6,8 +7,8 @@ import aiohttp
 from bs4 import BeautifulSoup
 
 
-BASE_URL = 'https://www.urionlinejudge.com.br'
-UERN = BASE_URL + '/judge/pt/users/university/uern'
+BASE_URL = os.environ['URI_URL']
+UNIVERSITY_URL = BASE_URL + f"/judge/pt/users/university/{os.environ['UNIVERSITY']}"
 HEADERS = {
     'accept': 'text/html',
     'accept-language': 'pt-BR, pt',
@@ -25,9 +26,9 @@ def problem_url(id):
     return f'{BASE_URL}/judge/pt/problems/view/{id}'
 
 
-def uern_pages(pages):
-    for index in range(1, pages + 1):
-        yield UERN + f'?page={index}'
+def university_pages(total_pages):
+    for index in range(1, total_pages + 1):
+        yield UNIVERSITY_URL + f'?page={index}'
 
 
 async def fetch(session, url):
@@ -77,7 +78,7 @@ def parse_date(date, format='%d/%m/%Y %H:%M:%S'):
 
 async def fetch_users(session, page):
     '''Retorna os usuários na página da universidade.'''
-    
+    print(f'fetching {page}')
     html = await fetch(session, page)
     soup = BeautifulSoup(html, 'html.parser')
     return parse_users(soup)
@@ -92,12 +93,11 @@ async def fetch_latest_solutions(session, id):
     return parse_solutions(soup)
 
 
-# TODO: pages should be str not int
-async def fetch_all(pages):
+async def fetch_all(total_pages):
     async with aiohttp.ClientSession(headers=HEADERS) as session:
 
         users_by_page = await asyncio.gather(
-            *(fetch_users(session, p) for p in uern_pages(pages))
+            *(fetch_users(session, p) for p in university_pages(total_pages))
         )        
         all_users = list(chain.from_iterable(users_by_page))
 
