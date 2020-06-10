@@ -7,7 +7,7 @@ import aiohttp
 from bs4 import BeautifulSoup
 
 
-BASE_URL = os.environ['URI_URL']
+BASE_URL = 'https://www.urionlinejudge.com.br'
 UNIVERSITY_URL = BASE_URL + f"/judge/pt/users/university/{os.environ['UNIVERSITY']}"
 HEADERS = {
     'accept': 'text/html',
@@ -78,7 +78,7 @@ def parse_date(date, format='%d/%m/%Y %H:%M:%S'):
 
 async def fetch_users(session, page):
     '''Retorna os usuários na página da universidade.'''
-    print(f'fetching {page}')
+    print(f'get {page}')
     html = await fetch(session, page)
     soup = BeautifulSoup(html, 'html.parser')
     return parse_users(soup)
