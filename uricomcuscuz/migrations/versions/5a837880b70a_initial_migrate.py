@@ -1,8 +1,8 @@
-"""empty message
+"""Initial migrate
 
 Revision ID: 5a837880b70a
-Revises: 
-Create Date: 2019-06-28 17:42:33.020938
+Revises:
+Create Date: 2020-09-12 17:49:10.123070
 
 """
 from alembic import op
