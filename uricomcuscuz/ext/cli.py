@@ -18,7 +18,7 @@ def drop_db():
 
 def fetch_subs():
     """Faz a raspagem de dados no site do URI e atualiza o bd."""
-    print('Updating solutions...')
+    current_app.logger.info('Updating solutions...')
     total_pages = int(current_app.config['UNIVERSITY_TOTAL_PAGES'])
     ###
     # https://github.com/aio-libs/aiohttp/issues/4324
@@ -29,14 +29,10 @@ def fetch_subs():
     for (user_id, user_name), submissions in zip(users, user_submissions):
         user = User(id=user_id, name=user_name)
         db.session.merge(user)
-        for sub in submissions:
-            (problem_id, 
-            problem_name, 
-            ranking, 
-            submission_id,
-            language, 
-            exec_time, 
-            date) = sub
+        for submission in submissions:
+            (problem_id, problem_name,
+             ranking, submission_id,
+             language, exec_time, date) = submission
             problem = Problem(id=problem_id, name=problem_name)
             submission = Submission(id=submission_id,
                                     user_id=user_id,
@@ -46,9 +42,9 @@ def fetch_subs():
                                     exec_time=exec_time,
                                     date=parse_date(date))
             db.session.merge(problem)
-            db.session.merge(submission)            
+            db.session.merge(submission)
     db.session.commit()
-    print('done.')
+    current_app.logger.info('done.')
 
 
 def init_app(app):

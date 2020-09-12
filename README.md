@@ -45,7 +45,7 @@ Rodar testes, atualizar o banco de dados e rodar o app:
 
 ```
 # Criar as tabelas do banco
-flask create-db
+flask db upgrade
 
 # Testes
 pytest uricomcuscuz
