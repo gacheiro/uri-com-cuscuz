@@ -10,8 +10,8 @@ users = [
 ]
 
 problems = [
-    {'name': 'Extremely easy problem'},
-    {'name': 'Not so easy problem'},
+    {'name': 'Extremely easy problem', 'category': 'iniciante'},
+    {'name': 'Not so easy problem', 'category': 'grafos'},
 ]
 
 submissions = [

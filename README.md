@@ -51,7 +51,7 @@ flask db upgrade
 pytest uricomcuscuz
 
 # Atualizar o banco de dados
-flask fetch-subs
+flask uri update
 
 # Rodar o app
 flask run

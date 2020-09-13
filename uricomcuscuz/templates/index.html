@@ -24,6 +24,9 @@
                 <a href="{{ url_for('app.problems', id=sub.problem.id) }}">
                     {{ sub.problem.name }}
                 </a>
+                {% if sub.problem.category %}
+                    <span class="tag">{{ sub.problem.category }}</span>
+                {% endif %}
             </td>
             <td class="has-text-centered">{{ sub.language }}</td>
             <td class="has-text-centered">{{ sub.date.strftime('%d %b %Y') }}</td>
