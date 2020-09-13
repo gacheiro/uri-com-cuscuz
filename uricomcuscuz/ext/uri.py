@@ -2,8 +2,8 @@
    Utiliza o BeautifulSoup para parsear as páginas HTML do URI e extrair
    as informações.
 
-   Exporta o comando `fetch-subs` para atualizar o banco de dados com novas
-   soluções dos estudantes.
+   Exporta o comando `flask uri update` para atualizar o banco de dados com
+   novas submissões dos estudantes.
 
    Uso:
         flask uri update
@@ -11,7 +11,6 @@
 import os
 import asyncio
 import datetime
-from itertools import chain
 
 import aiohttp
 from bs4 import BeautifulSoup
@@ -30,12 +29,6 @@ HEADERS = {
     'accept-language': 'pt-BR, pt',
     'user-agent': 'UricomCuscuz/1',
 }
-
-
-@click.group()
-def uri():
-    """Integração com o Uri Online Judge."""
-    pass
 
 
 def profile_url(id):
@@ -59,25 +52,50 @@ async def fetch(session, url):
         return await response.text()
 
 
-async def _fetch_students(session, page):
-    """Retorna os estudantes na página da universidade."""
-    current_app.logger.info(f'get {page}')
-    html = await fetch(session, page)
-    soup = BeautifulSoup(html, 'html.parser')
-    return parse_users(soup)
+async def fetch_all(urls):
+    async with aiohttp.ClientSession(headers=HEADERS) as session:
+        return await asyncio.gather(
+            *(fetch(session, url) for url in urls)
+        )
+
+
+def fetch_students(total_pages):
+    """Retorna uma lista de tuplas (id, name) de estudantes na universidade."""
+    loop = asyncio.get_event_loop()
+    urls = university_pages(total_pages)
+    pages = loop.run_until_complete(fetch_all(urls))
+    for page in pages:
+        soup = BeautifulSoup(page, 'html.parser')
+        for user in _parse_student(soup):
+            yield user
 
 
 # TODO: o uri retorna as datas com 3h a frente do horário local
 #       talvez fazer alguma transformação com o campo date
-async def _fetch_latest_solutions(session, user_id):
-    """Retorna [até] as 30 soluções mais recentes do estudante."""
-    html = await fetch(session, profile_url(user_id))
-    soup = BeautifulSoup(html, 'html.parser')
-    return parse_solutions(soup)
+def fetch_submissions(user_ids):
+    """Retorna [até] as 30 soluções mais recentes de cada estudante."""
+    loop = asyncio.get_event_loop()
+    urls = (profile_url(id) for id in user_ids)
+    pages = loop.run_until_complete(fetch_all(urls))
+    for page in pages:
+        soup = BeautifulSoup(page, 'html.parser')
+        yield _parse_submissions(soup)
 
 
-def parse_users(soup):
-    """Gera tuplas (id, nome) dos usuários na página da universidade."""
+def fetch_categories(problem_ids):
+    """O nome e id do problema já são obtidos em `fetch_submissions`. Aqui
+       obtemos somente a categoria do problema.
+    """
+    loop = asyncio.get_event_loop()
+    urls = (problem_url(id) for id in problem_ids)
+    pages = loop.run_until_complete(fetch_all(urls))
+    for page in pages:
+        soup = BeautifulSoup(page, 'html.parser')
+        yield _parse_category(soup)
+
+
+def _parse_student(soup):
+    """Gera tuplas (id, nome) dos estudantes da universidade."""
     if soup.tbody is None:
         return
     for user in soup.tbody.find_all('tr'):
@@ -87,14 +105,14 @@ def parse_users(soup):
             # pega só o id no final  href="/judge/pt/profile/[id]"
             id = atag.get('href').split('/')[-1]
             name = atag.get_text()
-            yield id, name
+            yield (id, name)
         except AttributeError:
             # lista de usuários acabou
             return
 
 
-def parse_solutions(soup):
-    """Gera as soluções encontradas na página do perfil do usuário."""
+def _parse_submissions(soup):
+    """Gera as submissões encontradas na página do perfil do usuário."""
     if soup.tbody is None:
         return
     for tr in soup.tbody.find_all('tr'):
@@ -109,38 +127,25 @@ def parse_date(date, format='%d/%m/%Y %H:%M:%S'):
     return datetime.datetime.strptime(date, format)
 
 
-def parse_category(soup):
+def _parse_category(soup):
     """Retorna a categoria do problema retirado do HTML. Por exemplo:
 
        <div id="page-name-c" class="pn-c-1 tour-step-problem-menu">
-       <h1>URI 1001</h1>
-       <ul>
-        <li>Iniciante</li>
-        ...
-       </ul>
+         <h1>URI 1001</h1>
+         <ul>
+           <li>Iniciante</li>
+           ...
+         </ul>
     """
     div = soup.find(id='page-name-c')
     if div is not None:
         return str(div.ul.li.get_text()).lower()
 
 
-async def _fetch_all(total_pages):
-    """Retorna dados dos estudantes na universidade e as suas últimas soluções.
-       O tipo de retorno é uma tupla (estudantes, solucoes).
-    """
-    async with aiohttp.ClientSession(headers=HEADERS) as session:
-        # Pega todos os estudantes que estão na universidade
-        # students_by_page é uma lista de lista de estudantes
-        students_by_page = await asyncio.gather(
-            *(_fetch_students(session, p) for p in university_pages(total_pages))
-        )
-        # Combina todos os estudantes em uma única lista (flat map)
-        students = list(chain.from_iterable(students_by_page))
-        # Pega as últimas soluções de cada estudante
-        solutions = await asyncio.gather(
-            *(_fetch_latest_solutions(session, id) for id, name in students)
-        )
-        return students, solutions
+@click.group()
+def uri():
+    """Integração com o Uri Online Judge."""
+    pass
 
 
 @uri.command()
@@ -149,22 +154,28 @@ def update():
     """Faz a raspagem de dados no site do URI e atualiza o bd."""
     from uricomcuscuz.models import db, User, Problem, Submission
 
-    current_app.logger.info('updating solutions...')
+    current_app.logger.info('updating database with latest data...')
     total_pages = int(current_app.config['UNIVERSITY_TOTAL_PAGES'])
     ###
     # https://github.com/aio-libs/aiohttp/issues/4324
     # https://github.com/Azure/azure-sdk-for-python/issues/9060
     loop = asyncio.get_event_loop()
-    users, user_submissions = loop.run_until_complete(_fetch_all(total_pages))
-    ###
-    for (user_id, user_name), submissions in zip(users, user_submissions):
-        user = User(id=user_id, name=user_name)
+    current_app.logger.info('updating users...')
+    users = list(fetch_students(total_pages))
+    for (id, name) in users:
+        user = User(id=id, name=name)
         db.session.merge(user)
+
+    current_app.logger.info('updating solutions...')
+    user_ids = (id for id, name in users)
+    submissions = fetch_submissions(user_ids)
+    for (user_id, _), submissions in zip(users, submissions):
         for submission in submissions:
             (problem_id, problem_name,
              ranking, submission_id,
              language, exec_time, date) = submission
-            problem = Problem(id=problem_id, name=problem_name)
+            problem = Problem(id=problem_id,
+                              name=problem_name)
             submission = Submission(id=submission_id,
                                     user_id=user_id,
                                     problem_id=problem_id,
@@ -175,30 +186,14 @@ def update():
             db.session.merge(problem)
             db.session.merge(submission)
     db.session.commit()
-    current_app.logger.info('done.')
+
     # Atualiza as categorias dos problemas
-    # TODO: os dois comandos precisam ser refeitos em um só?
-    update_categories()
-
-
-def update_categories():
-    """Atualiza a categoria dos problemas."""
-    from uricomcuscuz.models import db, Problem
-
-    async def _update():
-        """Retorna as páginas dos problemas."""
-        async with aiohttp.ClientSession(headers=HEADERS) as session:
-            return await asyncio.gather(
-                *(fetch(session, p.link) for p in problems)
-            )
-
-    current_app.logger.info('updating problems categories...')
+    current_app.logger.info('updating problem categories...')
     problems = Problem.query.filter_by(category=None).all()
-    loop = asyncio.get_event_loop()
-    pages = loop.run_until_complete(_update())
-    for problem, page in zip(problems, pages):
-        problem.category = \
-            parse_category(BeautifulSoup(page, 'html.parser'))
+    problem_ids = (p.id for p in problems)
+    categories = fetch_categories(problem_ids)
+    for problem, category in zip(problems, categories):
+        problem.category = category
     db.session.add_all(problems)
     db.session.commit()
     current_app.logger.info('done.')
