@@ -30,7 +30,7 @@ class Submission(db.Model):
 class Problem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(), nullable=False)
-    category = db.Column(db.String(20), nullable=True)
+    category = db.Column(db.String(50), nullable=True)
     submissions = db.relationship('Submission',
                                   backref=db.backref('problem'),
                                   order_by='Submission.date.desc()',
