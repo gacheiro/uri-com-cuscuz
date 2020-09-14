@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
 
+{% block message %}
+    {% include '_message.html' %}
+{% endblock %}
+
 {% block table_description %}
     <h3 class="title">Soluções mais recentes</h3>
 {% endblock %}

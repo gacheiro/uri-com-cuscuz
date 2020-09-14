@@ -14,36 +14,34 @@
     <body>
         <section class="hero is-dark">
             <div class="hero-body">
-                <div class="columns is-centered">
-                    <div class="column is-three-fifths">
-                        <h1 class="title">
-                            URI com cuscuz
-                        </h1>
-                        <h2 class="subtitle">
-                            {{ config['UNIVERSITY'] }} @ URI Online Judge
-                        </h2>
-                    </div>
+                <div class="container" style="max-width: 769px">
+                    <h1 class="title">
+                        URI com cuscuz
+                    </h1>
+                    <h2 class="subtitle">
+                        {{ config['UNIVERSITY'] }} @ URI Online Judge
+                    </h2>
                 </div>
             </div>
         </section>
-        <section style="margin-top: 32px;">
-            <div class="container is-fluid">
-                <div class="columns is-centered">
-                    <div class="column is-three-fifths">
-                        {% block table_description %} {% endblock %}
-                        <div class="box is-paddingless">
-                            <div class="table-container">
-                                <table class="table is-striped is-hoverable is-fullwidth">
-                                    {% block table %}
-                                    {% endblock %}
-                                </table>
-                            </div>
+        <section>
+            {% block message %}
+            {% endblock %}
+        </section>
+        <section>
+            <div class="container" style="max-width: 769px">
+                {% block table_description %} {% endblock %}
+                    <div class="box is-paddingless">
+                        <div class="table-container">
+                            <table class="table is-striped is-hoverable is-fullwidth">
+                                {% block table %}
+                                {% endblock %}
+                            </table>
                         </div>
-                        {% block pagination %}
-                        {% endblock %}
                     </div>
-                </div>
+                {% block pagination %}
+                {% endblock %}
             </div>
         </section>
-   </body>
+    </body>
 </html>
