@@ -1,5 +1,5 @@
 {% macro paginate(pagination, endpoint, page_id=None) %}
-<nav class="pagination" role="navigation" aria-label="pagination">
+<nav class="pagination is-small" role="navigation" aria-label="pagination">
     <a class="pagination-previous" href="{{ url_for(endpoint, id=page_id, page=1) }}"
        {% if not pagination.has_prev %} disabled {% endif %}>Primeira</a>
     <a class="pagination-previous" href="{{ url_for(endpoint, id=page_id, page=pagination.prev_num) }}"
