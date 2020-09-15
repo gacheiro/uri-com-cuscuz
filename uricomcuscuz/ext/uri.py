@@ -47,23 +47,28 @@ def university_pages(total_pages):
         yield UNIVERSITY_URL + f'?page={index}'
 
 
-async def fetch(session, url):
+async def _fetch(session, url):
     async with session.get(url) as response:
         return await response.text()
 
 
-async def fetch_all(urls):
-    async with aiohttp.ClientSession(headers=HEADERS) as session:
-        return await asyncio.gather(
-            *(fetch(session, url) for url in urls)
-        )
+def fetch_all(urls):
+    """Pega as urls de forma assíncrona."""
+
+    async def _fetch_all_async():
+        async with aiohttp.ClientSession(headers=HEADERS) as session:
+            return await asyncio.gather(
+                *(_fetch(session, url) for url in urls)
+            )
+
+    loop = asyncio.get_event_loop()
+    return loop.run_until_complete(_fetch_all_async())
 
 
 def fetch_students(total_pages):
     """Retorna uma lista de tuplas (id, name) de estudantes na universidade."""
-    loop = asyncio.get_event_loop()
     urls = university_pages(total_pages)
-    pages = loop.run_until_complete(fetch_all(urls))
+    pages = fetch_all(urls)
     for page in pages:
         soup = BeautifulSoup(page, 'html.parser')
         for user in _parse_student(soup):
@@ -74,9 +79,8 @@ def fetch_students(total_pages):
 #       talvez fazer alguma transformação com o campo date
 def fetch_submissions(user_ids):
     """Retorna [até] as 30 soluções mais recentes de cada estudante."""
-    loop = asyncio.get_event_loop()
     urls = (profile_url(id) for id in user_ids)
-    pages = loop.run_until_complete(fetch_all(urls))
+    pages = fetch_all(urls)
     for page in pages:
         soup = BeautifulSoup(page, 'html.parser')
         yield _parse_submissions(soup)
@@ -86,9 +90,8 @@ def fetch_categories(problem_ids):
     """O nome e id do problema já são obtidos em `fetch_submissions`. Aqui
        obtemos somente a categoria do problema.
     """
-    loop = asyncio.get_event_loop()
     urls = (problem_url(id) for id in problem_ids)
-    pages = loop.run_until_complete(fetch_all(urls))
+    pages = fetch_all(urls)
     for page in pages:
         soup = BeautifulSoup(page, 'html.parser')
         yield _parse_category(soup)
@@ -156,10 +159,7 @@ def update():
 
     current_app.logger.info('updating database with latest data...')
     total_pages = int(current_app.config['UNIVERSITY_TOTAL_PAGES'])
-    ###
-    # https://github.com/aio-libs/aiohttp/issues/4324
-    # https://github.com/Azure/azure-sdk-for-python/issues/9060
-    loop = asyncio.get_event_loop()
+
     current_app.logger.info('updating users...')
     users = list(fetch_students(total_pages))
     for (id, name) in users:
