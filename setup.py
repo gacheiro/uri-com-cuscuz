@@ -5,6 +5,7 @@ from setuptools import setup
 requires = [
     'aiohttp>=3.5.4',
     'beautifulsoup4>=4.7.1'
+    'coverage>=5.3',
     'Flask>=1.0.3',
     'Flask-SQLAlchemy>=2.4.0',
     'Flask-Migrate>=2.5.2',
