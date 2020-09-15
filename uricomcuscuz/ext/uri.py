@@ -70,8 +70,7 @@ def fetch_students(total_pages):
     urls = university_pages(total_pages)
     pages = fetch_all(urls)
     for page in pages:
-        soup = BeautifulSoup(page, 'html.parser')
-        for user in _parse_student(soup):
+        for user in _parse_student(page):
             yield user
 
 
@@ -82,8 +81,7 @@ def fetch_submissions(user_ids):
     urls = (profile_url(id) for id in user_ids)
     pages = fetch_all(urls)
     for page in pages:
-        soup = BeautifulSoup(page, 'html.parser')
-        yield _parse_submissions(soup)
+        yield _parse_submissions(page)
 
 
 def fetch_categories(problem_ids):
@@ -93,12 +91,12 @@ def fetch_categories(problem_ids):
     urls = (problem_url(id) for id in problem_ids)
     pages = fetch_all(urls)
     for page in pages:
-        soup = BeautifulSoup(page, 'html.parser')
-        yield _parse_category(soup)
+        yield _parse_category(page)
 
 
-def _parse_student(soup):
+def _parse_student(html):
     """Gera tuplas (id, nome) dos estudantes da universidade."""
+    soup = BeautifulSoup(html, 'html.parser')
     if soup.tbody is None:
         return
     for user in soup.tbody.find_all('tr'):
@@ -114,8 +112,9 @@ def _parse_student(soup):
             return
 
 
-def _parse_submissions(soup):
+def _parse_submissions(html):
     """Gera as submissões encontradas na página do perfil do usuário."""
+    soup = BeautifulSoup(html, 'html.parser')
     if soup.tbody is None:
         return
     for tr in soup.tbody.find_all('tr'):
@@ -126,11 +125,11 @@ def _parse_submissions(soup):
             yield sol
 
 
-def parse_date(date, format='%d/%m/%Y %H:%M:%S'):
+def _parse_date(date, format='%d/%m/%Y %H:%M:%S'):
     return datetime.datetime.strptime(date, format)
 
 
-def _parse_category(soup):
+def _parse_category(html):
     """Retorna a categoria do problema retirado do HTML. Por exemplo:
 
        <div id="page-name-c" class="pn-c-1 tour-step-problem-menu">
@@ -140,9 +139,10 @@ def _parse_category(soup):
            ...
          </ul>
     """
+    soup = BeautifulSoup(html, 'html.parser')
     div = soup.find(id='page-name-c')
     if div is not None:
-        return str(div.ul.li.get_text()).lower()
+        return str(div.ul.li.get_text()).strip().lower()
 
 
 @click.group()
@@ -182,7 +182,7 @@ def update():
                                     language=language,
                                     ranking=ranking[:-1], # remove o º do final
                                     exec_time=exec_time,
-                                    date=parse_date(date))
+                                    date=_parse_date(date))
             db.session.merge(problem)
             db.session.merge(submission)
     db.session.commit()
