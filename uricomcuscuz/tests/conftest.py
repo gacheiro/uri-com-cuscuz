@@ -6,12 +6,12 @@ from uricomcuscuz import create_app
 from uricomcuscuz.models import db, User, Problem, Submission
 
 users = [
-    {'name': 'Mr. Foo Bar'},
+    {'id': 1, 'name': 'Mr. Foo Bar'},
 ]
 
 problems = [
-    {'name': 'Extremely easy problem', 'category': 'iniciante'},
-    {'name': 'Not so easy problem', 'category': 'grafos'},
+    {'id': 1, 'name': 'Extremely easy problem', 'category': 'iniciante'},
+    {'id': 2, 'name': 'Not so easy problem', 'category': 'grafos'},
 ]
 
 submissions = [
@@ -42,11 +42,16 @@ submissions = [
 ]
 
 
-@pytest.fixture
-def client():
+@pytest.fixture(scope='session')
+def app():
     os.environ['APP_SETTINGS'] = 'config.TestingConfig'
     app = create_app()
     assert app.config['TESTING']
+    return app
+
+
+@pytest.fixture
+def client(app):
     with app.test_client() as client:
         with app.app_context():
             db.create_all()
@@ -56,10 +61,6 @@ def client():
 
 @pytest.fixture
 def populate_db(client):
-    for user in users:
-        db.session.add(User(**user))
-    for problem in problems:
-        db.session.add(Problem(**problem))
-    for sub in submissions:
-        db.session.add(Submission(**sub))
-    db.session.commit()
+    db.session.bulk_insert_mappings(User, users)
+    db.session.bulk_insert_mappings(Problem, problems)
+    db.session.bulk_insert_mappings(Submission, submissions)
