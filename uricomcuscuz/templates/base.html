@@ -33,7 +33,7 @@
                 {% block table_description %} {% endblock %}
                     <div class="box is-paddingless">
                         <div class="table-container">
-                            <table class="table is-striped is-hoverable is-fullwidth">
+                            <table class="sub-table table is-striped is-hoverable is-fullwidth">
                                 {% block table %}
                                 {% endblock %}
                             </table>
@@ -45,3 +45,15 @@
         </section>
     </body>
 </html>
+
+<style>
+  @media only screen and (max-width: 600px) {
+    .sub-table {
+      font-size: 0.9em;
+    }
+
+    th, td {
+      padding: .2em .5em;
+    }
+  }
+</style>
