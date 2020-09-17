@@ -2,8 +2,9 @@
 
 {% block table_description %}
     <p style="padding-bottom: 24px;">
-        <span class="title">Últimas soluções de {{ user.name }} </span>
-        <a href="{{ user.link }}" target="_blank"><strong>ver no URI</strong></a>
+        <h4 class="title is-4">Últimas soluções de {{ user.name }}
+            <a class="tag is-link" href="{{ user.link }}" target="_blank"><strong>ver no URI</strong></a>
+        </h4>
     </p>
 {% endblock %}
 
@@ -26,8 +27,8 @@
                     <span class="tag">{{ sub.problem.category }}</span>
                 {% endif %}
             </td>
-            <td class="has-text-centered">{{ sub.language }}</td>
-            <td class="has-text-centered">{{ sub.exec_time }}s</td>
+            <td class="has-text-centered"><small>{{ sub.language }}</small></td>
+            <td class="has-text-centered"><small>{{ sub.exec_time }}s</small></td>
             <td class="has-text-centered">{{ sub.date.strftime('%d %b %Y') }}</td>
         </tr>
         {% endfor %}

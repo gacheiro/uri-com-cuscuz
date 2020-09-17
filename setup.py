@@ -4,7 +4,7 @@ from setuptools import setup
 
 requires = [
     'aiohttp>=3.5.4',
-    'beautifulsoup4>=4.7.1'
+    'beautifulsoup4>=4.7.1',
     'coverage>=5.3',
     'Flask>=1.0.3',
     'Flask-SQLAlchemy>=2.4.0',
@@ -18,7 +18,7 @@ requires = [
 
 setup(
     name='Uri com cuscuz',
-    version='0.1',
+    version='0.2-dev',
     long_description=__doc__,
     packages=['uricomcuscuz'],
     include_package_data=True,

@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block table_description %}
-    <h3 class="title">Soluções mais recentes</h3>
+    <h4 class="title is-4">Soluções mais recentes</h4>
 {% endblock %}
 
 {% block table %}
@@ -32,7 +32,7 @@
                     <span class="tag">{{ sub.problem.category }}</span>
                 {% endif %}
             </td>
-            <td class="has-text-centered">{{ sub.language }}</td>
+            <td class="has-text-centered"><small>{{ sub.language }}</small></td>
             <td class="has-text-centered">{{ sub.date.strftime('%d %b %Y') }}</td>
         </tr>
         {% endfor %}
