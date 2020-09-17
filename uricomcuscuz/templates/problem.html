@@ -2,7 +2,7 @@
 
 {% block table_description %}
     <p style="padding-bottom: 24px;">
-        <h4 class="title is-4">Últimas soluções para {{ problem.name }} 
+        <h4 class="title is-4">Últimas soluções para {{ problem.name }}
             <a class="tag is-link" href="{{ problem.link }}" target="_blank"><strong>ver no URI</strong></a>
         </h4>
     </p>
@@ -26,7 +26,7 @@
             </td>
             <td class="has-text-centered"><small>{{ sub.language }}</small></td>
             <td class="has-text-centered"><small>{{ sub.exec_time }}s</small></td>
-            <td class="has-text-centered">{{ sub.date.strftime('%d %b %Y') }}</td>
+            <td class="has-text-centered"><small>{{ sub.date.strftime('%d %b %Y') }}<small></td>
         </tr>
         {% endfor %}
     </tbody>
