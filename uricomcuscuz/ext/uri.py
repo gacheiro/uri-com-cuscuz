@@ -2,11 +2,13 @@
    Utiliza o BeautifulSoup para parsear as páginas HTML do URI e extrair
    as informações.
 
-   Exporta o comando `flask uri update` para atualizar o banco de dados com
-   novas submissões dos estudantes.
+   Exporta os comandos `flask uri update` para atualizar o banco de dados com
+   novas submissões dos estudantes e `flask uri stats` para visualizar as
+   estatísticas do site.
 
    Uso:
         flask uri update
+        flask uri stats
 """
 import os
 import asyncio
@@ -199,6 +201,28 @@ def update():
     current_app.logger.info('done.')
 
 
+@uri.command()
+@with_appcontext
+def stats():
+    """Mostra as estatísticas do site."""
+    from sqlalchemy import func, distinct
+    from uricomcuscuz.models import db, User, Submission, Problem
+
+    nb_users, nb_subs, nb_problems, nb_langs = (
+        User.query.count(),
+        Submission.query.count(),
+        db.session.query(func.count(distinct(Problem.id))).scalar(),
+        db.session.query(func.count(distinct(Submission.language))).scalar(),
+    )
+
+    click.echo(f"Stats for {current_app.config['UNIVERSITY']} " +
+               "@ URI Online Judge:\n")
+    click.echo(f'number of users: {nb_users}')
+    click.echo(f'number of submissions: {nb_subs}')
+    click.echo(f'number of problems solved: {nb_problems}')
+    click.echo(f'number of distinct languages: {nb_langs}')
+
+
 def init_app(app):
-    """Registra o comando no flask cli."""
+    """Registra os comandos no flask cli."""
     app.cli.add_command(uri)

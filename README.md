@@ -36,7 +36,7 @@ python -m pip install --upgrade pip
 pip install -e .
 ```
 
-Para o app funcionar, é necessário definir algumas variáveis de ambiente 
+Para o app funcionar, é necessário definir algumas variáveis de ambiente
 (adicione as seguintes linhas a um arquivo com nome `.env`):
 
 ```
@@ -48,7 +48,7 @@ UNIVERSITY=UERN
 UNIVERSITY_TOTAL_PAGES=1
 ```
 
-Em seguida rode os comando para criar o banco de dados, testar o app para ver se está tudo funcionando e 
+Em seguida rode os comando para criar o banco de dados, testar o app para ver se está tudo funcionando e
 atualizar o banco de dados com os dados do URI Online Judge:
 
 ```bash
@@ -60,6 +60,9 @@ pytest uricomcuscuz
 
 # Atualizar o banco de dados
 flask uri update
+
+# Visualizar as estatísticas do site
+flask uri stats
 
 # Rodar o app
 flask run

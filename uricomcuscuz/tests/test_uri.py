@@ -5,7 +5,7 @@ import pytest
 
 from uricomcuscuz.ext.uri import (fetch_students, fetch_submissions,
                                   fetch_categories, profile_url, problem_url,
-                                  university_pages)
+                                  university_pages, stats)
 
 
 @pytest.mark.parametrize(('id', 'url'), (
@@ -77,8 +77,26 @@ def test_fetch_submissions():
 
 
 def test_fetch_categories():
-    paths = ['uricomcuscuz/tests/fixtures/html/problem.html']
     """Testa a função para obter as categorias dos problemas."""
+    paths = ['uricomcuscuz/tests/fixtures/html/problem.html']
     with patch('uricomcuscuz.ext.uri.fetch_all', fetch_all(paths)):
         categories = list(fetch_categories(problem_ids=[1]))
         assert categories == ['iniciante']
+
+
+def todo_test_cli__update():
+    """Testa o commando `flask uri update`."""
+    # TODO
+    ...
+
+
+def test_cli__stats(app, populate_db):
+    """Testa o comando `flask uri stats`."""
+    runner = app.test_cli_runner()
+    result = runner.invoke(stats)
+
+    assert result.exit_code == 0
+    assert 'number of users: 1' in result.output
+    assert 'number of submissions: 3' in result.output
+    assert 'number of problems solved: 2' in result.output
+    assert 'number of distinct languages: 2' in result.output
