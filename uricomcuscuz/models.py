@@ -26,6 +26,22 @@ class Submission(db.Model):
     exec_time = db.Column(db.Float, nullable=False)
     date = db.Column(db.DateTime, nullable=False)
 
+    @staticmethod
+    def query_by(category=''):
+        """Retorna uma query com as submissões filtradas pela categoria.
+           Se a categoria não for especificada, retorna todos as submissões.
+
+           A query retornada é ordernada pela data de forma descendente.
+        """
+        if category:
+            query = (db.session.query(Submission)
+                     .join(Problem)
+                     .filter(Problem.category.ilike('%' + category + '%')))
+        else:
+            query = Submission.query
+        query = query.order_by(Submission.date.desc())
+        return query
+
 
 class Problem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
