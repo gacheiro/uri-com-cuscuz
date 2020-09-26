@@ -1,11 +1,16 @@
 {% extends 'base.html' %}
 
 {% block message %}
-    {% include '_message.html' %}
+    {# Apenas mostra a mensagem fixada na primeira página #}
+    {% if request.full_path == '/?' %}
+        {% include '_message.html' %}
+    {% endif %}
 {% endblock %}
 
 {% block table_description %}
-    <h4 class="title is-4">Soluções mais recentes</h4>
+    <p>
+        <h4 class="title is-4">Soluções mais recentes</h4>
+    </p>
 {% endblock %}
 
 {% block table %}

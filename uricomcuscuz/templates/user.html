@@ -1,11 +1,9 @@
 {% extends 'base.html' %}
 
 {% block table_description %}
-    <p style="padding-bottom: 24px;">
-        <h4 class="title is-4">Últimas soluções de {{ user.name }}
-            <a class="tag is-link" href="{{ user.link }}" target="_blank"><strong>ver no URI</strong></a>
-        </h4>
-    </p>
+    <h4 class="title is-4">Últimas soluções de {{ user.name }}
+        <a class="tag is-link" href="{{ user.link }}" target="_blank"><strong>ver no URI</strong></a>
+    </h4>
 {% endblock %}
 
 {% block table %}
