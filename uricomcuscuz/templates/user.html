@@ -22,7 +22,9 @@
                     {{ sub.problem.name }}
                 </a>
                 {% if sub.problem.category %}
-                    <span class="tag">{{ sub.problem.category }}</span>
+                    <a class="tag" href="{{ url_for('app.index', category=sub.problem.category) }}">
+                        {{ sub.problem.category }}
+                    </a>
                 {% endif %}
             </td>
             <td class="has-text-centered"><small>{{ sub.language }}</small></td>
