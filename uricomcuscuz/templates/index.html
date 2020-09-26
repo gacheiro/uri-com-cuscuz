@@ -10,7 +10,13 @@
 {% block table_description %}
     {% set req_category = request.args.get('category') %}
     <h4 class="title is-4">Soluções mais recentes
-        {% if req_category %} na categoria <span class="has-text-link">{{ req_category }}</span> {% endif %}
+        {% if req_category %}
+            na categoria
+            <span class="tag is-warning is-medium">
+                {{ req_category }}
+                <a class="delete is-small" href="/"></a>
+            </span>
+        {% endif %}
     </h4>
 {% endblock %}
 
