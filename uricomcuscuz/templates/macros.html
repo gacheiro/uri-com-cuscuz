@@ -1,13 +1,25 @@
 {% macro paginate(pagination, endpoint, page_id=None) %}
 <nav class="pagination is-small" role="navigation" aria-label="pagination">
-    <a class="pagination-previous" href="{{ url_for(endpoint, id=page_id, page=1) }}"
-       {% if not pagination.has_prev %} disabled {% endif %}>PRIMEIRA</a>
-    <a class="pagination-previous" href="{{ url_for(endpoint, id=page_id, page=pagination.prev_num) }}"
-       {% if not pagination.has_prev %} disabled {% endif %}>ANTERIOR</a>
-    <a class="pagination-next" href="{{ url_for(endpoint, id=page_id, page=pagination.next_num) }}"
-       {% if not pagination.has_next %} disabled {% endif %}>PRÓXIMA</a>
-    <a class="pagination-next" href="{{ url_for(endpoint, id=page_id, page=pagination.pages) }}"
-       {% if not pagination.has_next %} disabled {% endif %}>ÚLTIMA</a>
+    {% set category = request.args.get('category') %}
+    <a class="pagination-previous" href="{{ url_for(endpoint, id=page_id,
+                                                    category=category) }}"
+       {% if not pagination.has_prev %} disabled {% endif %}>PRIMEIRA
+    </a>
+    <a class="pagination-previous" href="{{ url_for(endpoint, id=page_id,
+                                                    category=category,
+                                                    page=pagination.prev_num) }}"
+       {% if not pagination.has_prev %} disabled {% endif %}>ANTERIOR
+    </a>
+    <a class="pagination-next" href="{{ url_for(endpoint, id=page_id,
+                                                category=category,
+                                                page=pagination.next_num) }}"
+       {% if not pagination.has_next %} disabled {% endif %}>PRÓXIMA
+    </a>
+    <a class="pagination-next" href="{{ url_for(endpoint, id=page_id,
+                                                category=category,
+                                                page=pagination.pages) }}"
+       {% if not pagination.has_next %} disabled {% endif %}>ÚLTIMA
+    </a>
     <ul class="pagination-list">
     </ul>
 </nav>

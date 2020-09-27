@@ -9,8 +9,9 @@ bp = Blueprint('app', __name__)
 
 @bp.route('/')
 def index():
-    page = request.args.get('page', 1, type=int)
-    query = Submission.query.order_by(Submission.date.desc())
+    page, category = (request.args.get('page', 1, type=int),
+                      request.args.get('category', '').strip())
+    query = Submission.query_by(category=category)
     pagination = query.paginate(page,
                                 current_app.config['PAGINATION'],
                                 error_out=False)
