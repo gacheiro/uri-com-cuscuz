@@ -18,7 +18,7 @@ requires = [
 
 setup(
     name='Uri com cuscuz',
-    version='0.2',
+    version='0.3-dev',
     long_description=__doc__,
     packages=['uricomcuscuz'],
     include_package_data=True,
