@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 
 {% block table_description %}
-    <h4 class="title is-4">Últimas soluções de {{ user.name }}
+    <h4 class="title is-4">Últimas soluções de
+        <span class="has-text-link">{{ user.name }}</span>
         <a class="tag is-link" href="{{ user.link }}" target="_blank"><strong>ver no URI</strong></a>
     </h4>
 {% endblock %}
