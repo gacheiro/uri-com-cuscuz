@@ -4,7 +4,7 @@ from unittest.mock import patch
 import pytest
 
 from uricomcuscuz.ext.uri import (fetch_students, fetch_submissions,
-                                  fetch_categories, profile_url, problem_url,
+                                  fetch_problems, profile_url, problem_url,
                                   university_pages, stats)
 
 
@@ -76,12 +76,12 @@ def test_fetch_submissions():
             assert list(submissions) == subs
 
 
-def test_fetch_categories():
+def test_fetch_problems():
     """Testa a função para obter as categorias dos problemas."""
     paths = ['uricomcuscuz/tests/fixtures/html/problem.html']
     with patch('uricomcuscuz.ext.uri.fetch_all', fetch_all(paths)):
-        categories = list(fetch_categories(problem_ids=[1]))
-        assert categories == ['iniciante']
+        problems = list(fetch_problems(problem_ids=[1]))
+        assert problems == [('Extremamente Basico', 'iniciante')]
 
 
 def todo_test_cli__update():
