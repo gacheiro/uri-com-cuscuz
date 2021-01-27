@@ -86,14 +86,12 @@ def fetch_submissions(user_ids):
         yield _parse_submissions(page)
 
 
-def fetch_categories(problem_ids):
-    """O nome e id do problema já são obtidos em `fetch_submissions`. Aqui
-       obtemos somente a categoria do problema.
-    """
+def fetch_problems(problem_ids):
+    """Retorna o nome e a categoria dos problemas, de acordo com o id."""
     urls = (problem_url(id) for id in problem_ids)
     pages = fetch_all(urls)
     for page in pages:
-        yield _parse_category(page)
+        yield _parse_problem(page)
 
 
 def _parse_student(html):
@@ -131,8 +129,13 @@ def _parse_date(date, format='%d/%m/%Y %H:%M:%S'):
     return datetime.datetime.strptime(date, format)
 
 
-def _parse_category(html):
-    """Retorna a categoria do problema retirado do HTML. Por exemplo:
+def _parse_problem(html):
+    """Retorna o nome e a categoria do problema retirado do HTML. O nome
+       é retirado do título da página:
+       
+       <title>1001 - Extremamente Básico - URI Online Judge</title>
+
+       Enquanto a categoria é retirada da do id 'page-name-c':
 
        <div id="page-name-c" class="pn-c-1 tour-step-problem-menu">
          <h1>URI 1001</h1>
@@ -142,9 +145,17 @@ def _parse_category(html):
          </ul>
     """
     soup = BeautifulSoup(html, 'html.parser')
+    try:
+        name = soup.title.get_text().split('-')[1].strip()
+    except IndexError:
+        name = ''
+
     div = soup.find(id='page-name-c')
-    if div is not None:
-        return str(div.ul.li.get_text()).strip().lower()
+    try:
+        category = div.ul.li.get_text().strip().lower()
+    except (AttributeError, TypeError):
+        category = None
+    return name, category
 
 
 @click.group()
@@ -189,12 +200,13 @@ def update():
             db.session.merge(submission)
     db.session.commit()
 
-    # Atualiza as categorias dos problemas
-    current_app.logger.info('updating problem categories...')
+    # Atualiza as informações dos problemas (nome e categoria)
+    # Ver issue #2
+    current_app.logger.info('updating problems data...')
     problems = Problem.query.filter_by(category=None).all()
-    problem_ids = (p.id for p in problems)
-    categories = fetch_categories(problem_ids)
-    for problem, category in zip(problems, categories):
+    data = fetch_problems([p.id for p in problems])
+    for problem, (name, category) in zip(problems, data):
+        problem.name = name or problem.name
         problem.category = category
     db.session.add_all(problems)
     db.session.commit()
